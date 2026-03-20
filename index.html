@@ -38,7 +38,6 @@
         overflow-x: hidden;
       }
 
-      /* Ambient glow layers */
       .ambient{
         position: fixed;
         inset: 0;
@@ -71,7 +70,6 @@
         100%{ transform: translate3d(-2%, -1%, 0) scale(1.02) }
       }
 
-      /* Film grain overlay (no external assets) */
       .grain{
         position: fixed;
         inset: 0;
@@ -81,9 +79,7 @@
         mix-blend-mode: overlay;
         background:
           repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0px, rgba(255,255,255,.10) 1px, transparent 1px, transparent 3px),
-          repeating-linear-gradient(90deg, rgba(217,179,106,.12) 0px, rgba(217,179,106,.12) 1px, transparent 1px, transparent 4px),
-          radial-gradient(circle at 20% 10%, rgba(255,255,255,.08), transparent 45%),
-          radial-gradient(circle at 80% 60%, rgba(217,179,106,.06), transparent 55%);
+          repeating-linear-gradient(90deg, rgba(217,179,106,.12) 0px, rgba(217,179,106,.12) 1px, transparent 1px, transparent 4px);
         filter: contrast(120%) brightness(0.92);
         animation: grainShift 7s steps(10) infinite;
       }
@@ -96,7 +92,6 @@
         100%{ transform: translate3d(0,0,0) }
       }
 
-      /* Particles canvas */
       #bgCanvas{
         position: fixed;
         inset: 0;
@@ -193,6 +188,7 @@
         background: rgba(0,0,0,.22);
         color: rgba(246,231,255,.96);
         outline: none;
+        font-size: 16px; /* prevent iOS zoom */
         box-shadow:
           0 12px 25px rgba(0,0,0,.22),
           0 0 0 1px rgba(255,255,255,.02) inset;
@@ -251,12 +247,6 @@
           0 0 0 4px rgba(217,179,106,.22);
       }
 
-      .btn.secondary{
-        border-color: rgba(255,255,255,.18);
-        background: rgba(255,255,255,.06);
-        font-weight: 600;
-      }
-
       .shake{
         animation: shake .35s ease-in-out 1;
       }
@@ -269,7 +259,6 @@
         100%{ transform: translateX(0) }
       }
 
-      /* Transition between scenes */
       .fade-out{ animation: fadeOut .45s ease forwards; }
       .fade-in{ animation: fadeIn .6s ease forwards; }
       @keyframes fadeOut{
@@ -328,7 +317,6 @@
         overflow: hidden;
       }
 
-      /* Subtle engraved pattern */
       .safe__body::before{
         content:"";
         position:absolute;
@@ -355,7 +343,6 @@
         background: rgba(0,0,0,.10);
       }
 
-      /* Door */
       .door{
         position:absolute;
         left: 8%;
@@ -443,7 +430,6 @@
         overflow: hidden;
       }
 
-      /* Safe open glow */
       .open-glow{
         position:absolute;
         left: 14%;
@@ -458,7 +444,6 @@
         pointer-events:none;
       }
 
-      /* Letter emergence */
       .letter-wrap{
         position:absolute;
         left: 50%;
@@ -482,17 +467,9 @@
         transition: opacity .65s ease, transform .85s cubic-bezier(.2,.8,.2,1), filter .85s ease;
         transform-style: preserve-3d;
       }
+      .letter:disabled{ cursor: default; }
+      .letter:focus-visible{ outline: none; }
 
-      .letter:disabled{
-        cursor: default;
-      }
-
-      .letter:focus-visible{
-        outline: none;
-        filter: drop-shadow(0 0 0 rgba(0,0,0,0));
-      }
-
-      /* Envelope body (front) */
       .envelope{
         position:absolute;
         inset: 0;
@@ -509,17 +486,6 @@
         transform: translateZ(0);
       }
 
-      .envelope::after{
-        content:"";
-        position:absolute;
-        inset:-30%;
-        background:
-          repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.02) 18px, rgba(0,0,0,.05) 42px);
-        opacity: .25;
-        transform: rotate(9deg);
-      }
-
-      /* flap */
       .flap{
         position:absolute;
         left: 12%;
@@ -540,7 +506,6 @@
         inset: 0;
       }
 
-      /* wax seal */
       .seal{
         position:absolute;
         width: 44px;
@@ -577,7 +542,6 @@
         text-shadow: 0 0 14px rgba(255,235,245,.12);
       }
 
-      /* handwritten text */
       .hand{
         position:absolute;
         left: 50%;
@@ -621,7 +585,7 @@
         transition: transform .75s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
       }
 
-      /* When letter is revealed (unlocked door done) */
+      /* Unlocked states */
       body[data-state="unlocked"] .open-glow{ opacity: 1; transform: scale(1); }
       body[data-state="unlocked"] .door{ transform: perspective(800px) rotateY(86deg) translateX(6px); filter: saturate(1.08); }
       body[data-state="unlocked"] .letter{
@@ -630,13 +594,10 @@
         transform: translateY(-18px) scale(1) rotateX(0deg);
         filter: blur(0px) saturate(1.12);
       }
-
-      /* Make safe slightly more alive when unlocked */
       body[data-state="unlocked"] .safe{
         filter: drop-shadow(0 55px 65px rgba(0,0,0,.62)) drop-shadow(0 0 55px rgba(217,179,106,.16));
       }
 
-      /* When envelope opened */
       body[data-state="letter-open"] .flap{
         transform: rotateX(66deg) translateY(-2px);
         opacity: .98;
@@ -646,186 +607,165 @@
         opacity: 1;
       }
 
-      /* Move paper & reveal video */
-      .video-panel{
-        position:absolute;
-        left: 50%;
-        top: 92%;
-        transform: translate(-50%, -30%);
-        width: min(92%, 520px);
-        max-width: 520px;
-        border-radius: 18px;
-        border: 1px solid rgba(217,179,106,.22);
-        background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-        box-shadow:
-          0 30px 75px rgba(0,0,0,.42),
-          0 0 0 1px rgba(255,255,255,.04) inset;
-        padding: 12px;
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: opacity .6s ease, max-height .7s ease;
-        pointer-events: none;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-
-      body[data-state="letter-open"] .video-panel{
-        opacity: 1;
-        max-height: 420px;
-        pointer-events: auto;
-      }
-
-      /* Fullscreen (API fallback) */
-      .fs-close{
-        position:absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 5;
+      /* =============================================
+         VIDEO MODAL — funziona su iOS, Android, Desktop
+         ============================================= */
+      .video-modal{
         display: none;
-        appearance: none;
-        border: 1px solid rgba(217,179,106,.45);
-        background: rgba(0,0,0,.35);
-        color: rgba(246,231,255,.96);
-        border-radius: 999px;
-        height: 44px;
-        padding: 0 14px;
-        font-weight: 750;
-        letter-spacing: .2px;
-        cursor: pointer;
-        box-shadow: 0 22px 55px rgba(0,0,0,.40);
-      }
-      .fs-close:focus-visible{
-        outline: none;
-        box-shadow:
-          0 22px 55px rgba(0,0,0,.40),
-          0 0 0 4px rgba(217,179,106,.22);
-      }
-
-      body[data-ui="fs-fallback"] .video-panel{
-        pointer-events: auto;
         position: fixed;
         inset: 0;
-        top: 0;
-        left: 0;
-        transform: none;
-        z-index: 50;
-        max-height: none;
-        width: 100%;
-        height: 100%;
-        padding: 16px;
-        margin: 0;
-        opacity: 1;
-        background: rgba(0,0,0,.55);
+        z-index: 100;
+        background: rgba(0,0,0,0);
+        transition: background .35s ease;
+        align-items: center;
+        justify-content: center;
+        padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
       }
-      body[data-ui="fs-fallback"] .video-frame{
-        width: 100%;
-        height: 100%;
-        max-width: none;
-        aspect-ratio: auto;
+      .video-modal.active{
+        display: flex;
+        background: rgba(0,0,0,.88);
       }
-      body[data-ui="fs-fallback"] .caption{
-        display: none;
-      }
-      body[data-ui="fs-fallback"] .fs-close{
-        display: inline-flex;
-        align-items:center;
-        gap: 10px;
+      .video-modal.visible{
+        background: rgba(0,0,0,.92);
       }
 
-      .video-frame{
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,.10);
-        background: rgba(0,0,0,.18);
+      .video-modal__inner{
         position: relative;
-        aspect-ratio: 16/9;
-        width: 100%;
-        max-width: 520px;
-      }
-      video{
         width: 100%;
         height: 100%;
-        display:block;
-        object-fit: cover;
-        background: #08050b;
+        max-width: 100vw;
+        max-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 0;
       }
 
-      .video-loading{
-        position:absolute;
-        inset:0;
-        display:grid;
-        place-items:center;
-        gap: 10px;
-        background: radial-gradient(circle at 50% 30%, rgba(217,179,106,.12), rgba(0,0,0,.35));
-        opacity: 1;
-        transition: opacity .25s ease;
-        pointer-events: none;
+      /* Il video occupa tutto lo schermo su mobile */
+      .video-modal video{
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 100vw;
+        max-height: 100dvh;
+        object-fit: contain;
+        background: #000;
+        border-radius: 0;
       }
-      .video-loading.off{ opacity: 0; }
 
-      .spinner{
+      /* Su schermi più grandi: arrotondato e con padding */
+      @media (min-width: 600px){
+        .video-modal__inner{
+          padding: 20px;
+          max-width: 860px;
+          margin: 0 auto;
+        }
+        .video-modal video{
+          border-radius: 16px;
+          max-height: calc(100dvh - 80px);
+          border: 1px solid rgba(217,179,106,.22);
+          box-shadow: 0 40px 100px rgba(0,0,0,.65);
+        }
+      }
+
+      /* Bottone chiudi */
+      .video-modal__close{
+        position: fixed;
+        top: max(14px, env(safe-area-inset-top, 14px));
+        right: max(14px, env(safe-area-inset-right, 14px));
+        z-index: 110;
+        appearance: none;
         width: 44px;
         height: 44px;
         border-radius: 999px;
-        border: 2px solid rgba(217,179,106,.25);
-        border-top-color: rgba(217,179,106,.85);
+        border: 1px solid rgba(217,179,106,.45);
+        background: rgba(5,2,5,.75);
+        color: rgba(246,231,255,.96);
+        font-size: 20px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 28px rgba(0,0,0,.45);
+        transition: transform .15s ease, background .15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .video-modal__close:active{ transform: scale(.93); }
+
+      /* Overlay play button */
+      .video-modal__play{
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,.38);
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity .25s ease;
+        pointer-events: none;
+      }
+      .video-modal__play.on{
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .play-circle{
+        width: 72px;
+        height: 72px;
+        border-radius: 999px;
+        border: 2px solid rgba(217,179,106,.65);
+        background: rgba(5,2,5,.62);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 0 40px rgba(217,179,106,.22);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform .15s ease;
+      }
+      .play-circle:active{ transform: scale(.92); }
+      .play-tri{
+        width: 0; height: 0;
+        border-left: 24px solid rgba(246,231,255,.96);
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        margin-left: 5px;
+        filter: drop-shadow(0 0 10px rgba(217,179,106,.35));
+      }
+
+      /* Spinner caricamento */
+      .video-modal__loading{
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        pointer-events: none;
+      }
+      .video-modal__loading.off{ display: none; }
+      .spinner{
+        width: 48px;
+        height: 48px;
+        border-radius: 999px;
+        border: 2px solid rgba(217,179,106,.22);
+        border-top-color: rgba(217,179,106,.90);
         animation: spin 1s linear infinite;
-        box-shadow: 0 0 20px rgba(217,179,106,.18);
+        box-shadow: 0 0 24px rgba(217,179,106,.20);
       }
       @keyframes spin{ to{ transform: rotate(360deg) } }
       .loading-text{
-        font-size: 13px;
-        color: rgba(246,231,255,.78);
+        font-size: 14px;
+        color: rgba(246,231,255,.75);
         letter-spacing: .18px;
-      }
-
-      .video-playOverlay{
-        position:absolute;
-        inset:0;
-        display:grid;
-        place-items:center;
-        background: radial-gradient(circle at 50% 30%, rgba(217,179,106,.14), rgba(0,0,0,.45));
-        opacity: 0;
-        transform: translateY(4px);
-        transition: opacity .25s ease, transform .25s ease;
-        pointer-events: none;
-        padding: 16px;
-      }
-      .video-playOverlay.on{
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-      }
-
-      .play-btn{
-        display:flex;
-        align-items:center;
-        gap: 10px;
-        border-radius: 999px;
-        height: 48px;
-        padding: 0 16px;
-        border: 1px solid rgba(217,179,106,.45);
-        background: linear-gradient(180deg, rgba(217,179,106,.24), rgba(0,0,0,.12));
-        color: rgba(246,231,255,.96);
-        font-weight: 750;
-        letter-spacing: .2px;
-        cursor: pointer;
-        box-shadow: 0 22px 55px rgba(0,0,0,.40);
-      }
-      .play-tri{
-        width: 0; height: 0;
-        border-left: 12px solid rgba(246,231,255,.96);
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-        filter: drop-shadow(0 0 12px rgba(217,179,106,.25));
-      }
-
-      .caption{
-        margin: 8px 0 0;
-        font-size: 13px;
-        color: rgba(246,231,255,.78);
-        line-height: 1.45;
       }
 
       /* Reduced motion */
@@ -833,12 +773,11 @@
         .ambient::before, .ambient::after, .gate-shimmer{ animation: none !important; }
         .shake{ animation: none !important; }
         .fade-out, .fade-in{ animation: none !important; }
+        .spinner{ animation: none !important; }
       }
 
-      /* Small screens: keep safe and letter fully visible */
       @media (max-width: 420px){
         :root{ --safeH: clamp(210px, 68vw, 340px); }
-        .video-panel{ top: 96%; transform: translate(-50%, -40%); }
       }
     </style>
   </head>
@@ -887,7 +826,6 @@
           <div class="safe" aria-hidden="true">
             <div class="safe__body"></div>
             <div class="safe__rim"></div>
-
             <div class="open-glow"></div>
             <div class="bore"></div>
 
@@ -914,128 +852,110 @@
                   <div class="paper" aria-hidden="true"></div>
                 </div>
               </button>
-
-              <div class="video-panel" id="videoPanel" aria-label="Video segreto">
-                <button class="fs-close" type="button" id="fsCloseBtn" aria-label="Chiudi video">
-                  Chiudi
-                </button>
-                <div class="video-frame">
-                  <video
-                    id="secretVideo"
-                    playsinline
-                    preload="metadata"
-                    aria-label="Video segreto"
-                  >
-                    <!--
-                      2) Cambia qui la sorgente del video.
-                      Esempio: src="media/video.mp4"
-                    -->
-                    <source id="videoSource" src="Should Cat Build A Pickup Truck.mp4" type="video/mp4" />
-                  </video>
-
-                  <div class="video-loading" id="videoLoading" aria-live="polite">
-                    <div class="spinner" aria-hidden="true"></div>
-                    <div class="loading-text">La lettera si sta aprendo...</div>
-                  </div>
-
-                  <div class="video-playOverlay" id="videoPlayOverlay" aria-hidden="true">
-                    <button class="play-btn" type="button" id="videoPlayBtn">
-                      <span class="play-tri" aria-hidden="true"></span>
-                      <span>Riproduci</span>
-                    </button>
-                  </div>
-                </div>
-
-                <p class="caption">
-                  Se il browser blocca l'autoplay, premi "Riproduci" per avviare il video.
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
     </div>
 
+    <!-- VIDEO MODAL — separato dal DOM della cassaforte, copre tutto lo schermo -->
+    <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Video segreto">
+      <button class="video-modal__close" id="modalCloseBtn" type="button" aria-label="Chiudi video">✕</button>
+
+      <div class="video-modal__inner">
+        <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+          <video
+            id="secretVideo"
+            playsinline
+            webkit-playsinline
+            x5-playsinline
+            preload="metadata"
+            aria-label="Video segreto"
+          >
+            <!-- Cambia src con il percorso del tuo video -->
+            <source id="videoSource" src="Should Cat Build A Pickup Truck.mp4" type="video/mp4" />
+          </video>
+
+          <!-- Loading spinner -->
+          <div class="video-modal__loading" id="videoLoading">
+            <div class="spinner" aria-hidden="true"></div>
+            <div class="loading-text">La lettera si sta aprendo…</div>
+          </div>
+
+          <!-- Overlay play manuale (fallback se autoplay bloccato) -->
+          <div class="video-modal__play" id="videoPlayOverlay" aria-hidden="true">
+            <div class="play-circle" id="videoPlayBtn" role="button" tabindex="0" aria-label="Riproduci video">
+              <div class="play-tri" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       /***********************
-       * CONFIG (editabili)
+       * CONFIG
        ***********************/
-      // 1) Cambia qui la password (controllo solo client-side, per ora).
-      const PASSWORD = "010226";
-
-      // 2) Cambia qui la sorgente del video (in alternativa, puoi modificare anche l'elemento <source> sopra).
-      // Se lasci questo valore come placeholder, useremo la sorgente già presente nel tag <source>.
-      const VIDEO_SRC = "Should Cat Build A Pickup Truck.mp4";
-
-      // 3) Cambia qui il testo della lettera / intro.
-      const LETTER_TEXT = {
-        line1: "Per te",
-        line2: "Amore mio"
-      };
+      const PASSWORD   = "010226";
+      const VIDEO_SRC  = "Should Cat Build A Pickup Truck.mp4";
+      const LETTER_TEXT = { line1: "Per te", line2: "Amore mio" };
 
       /***********************
        * Elementi
        ***********************/
-      const state = {
-        unlocked: false,
-        letterOpened: false,
-        playAttempts: 0
-      };
+      const body            = document.body;
+      const gateScene       = document.getElementById("gateScene");
+      const safeScene       = document.getElementById("safeScene");
+      const gateCard        = document.getElementById("gateCard");
+      const gateForm        = document.getElementById("gateForm");
+      const unlockBtn       = document.getElementById("unlockBtn");
+      const passwordInput   = document.getElementById("passwordInput");
+      const gateErrorText   = document.getElementById("gateErrorText");
+      const letterButton    = document.getElementById("letterButton");
+      const videoModal      = document.getElementById("videoModal");
+      const secretVideo     = document.getElementById("secretVideo");
+      const videoSource     = document.getElementById("videoSource");
+      const videoLoading    = document.getElementById("videoLoading");
+      const videoPlayOverlay= document.getElementById("videoPlayOverlay");
+      const videoPlayBtn    = document.getElementById("videoPlayBtn");
+      const modalCloseBtn   = document.getElementById("modalCloseBtn");
+      const handLine1       = document.getElementById("handLine1");
+      const handLine2       = document.getElementById("handLine2");
 
-      const body = document.body;
-      const gateScene = document.getElementById("gateScene");
-      const safeScene = document.getElementById("safeScene");
-      const gateCard = document.getElementById("gateCard");
-      const gateForm = document.getElementById("gateForm");
-      const unlockBtn = document.getElementById("unlockBtn");
-      const passwordInput = document.getElementById("passwordInput");
-      const gateErrorText = document.getElementById("gateErrorText");
+      handLine1.textContent = LETTER_TEXT.line1;
+      handLine2.textContent = LETTER_TEXT.line2;
 
-      const letterButton = document.getElementById("letterButton");
-      const secretVideo = document.getElementById("secretVideo");
-      const videoLoading = document.getElementById("videoLoading");
-      const videoPlayOverlay = document.getElementById("videoPlayOverlay");
-      const videoPlayBtn = document.getElementById("videoPlayBtn");
-      const fsCloseBtn = document.getElementById("fsCloseBtn");
-
-      const handLine1 = document.getElementById("handLine1");
-      const handLine2 = document.getElementById("handLine2");
-
-      const videoSource = document.getElementById("videoSource");
-      function normalizeLocalWindowsPathToFileUrl(s){
+      /* Normalizza percorsi Windows */
+      function normalizeUrl(s){
         const input = String(s || "").trim();
-        // Windows assoluto: C:\Users\...  -> file:///C:/Users/...
         if (/^[a-zA-Z]:[\\/]/.test(input)){
           return "file:///" + input.replace(/\\/g, "/");
         }
         return input;
       }
 
-      // Normalizza anche la sorgente già presente nel markup (se l'hai incollata come path Windows).
-      videoSource.src = normalizeLocalWindowsPathToFileUrl(videoSource.getAttribute("src") || videoSource.src);
+      /* Imposta src video */
+      const rawSrc = (VIDEO_SRC || "").trim() || videoSource.getAttribute("src") || "";
+      videoSource.src = normalizeUrl(rawSrc);
 
-      const VIDEO_SRC_PLACEHOLDER = "Should Cat Build A Pickup Truck.mp4";
-      if (typeof VIDEO_SRC === "string" && VIDEO_SRC.trim() !== "" && VIDEO_SRC !== VIDEO_SRC_PLACEHOLDER) {
-        videoSource.src = normalizeLocalWindowsPathToFileUrl(VIDEO_SRC);
-      }
+      /***********************
+       * Stato
+       ***********************/
+      const state = { unlocked: false, letterOpened: false };
 
-      handLine1.textContent = LETTER_TEXT.line1;
-      handLine2.textContent = LETTER_TEXT.line2;
-
+      function setState(next){ body.setAttribute("data-state", next); }
       function setGateError(msg){
         gateErrorText.textContent = msg || "";
         gateErrorText.classList.toggle("on", Boolean(msg));
       }
-
-      function setState(next){
-        body.setAttribute("data-state", next);
-      }
-
       function lockGate(locked){
         unlockBtn.disabled = locked;
         passwordInput.disabled = locked;
       }
 
+      /***********************
+       * Gate → Safe
+       ***********************/
       function revealSafe(){
         safeScene.classList.remove("hidden");
         safeScene.classList.add("fade-in");
@@ -1043,128 +963,12 @@
         gateScene.style.pointerEvents = "none";
         gateScene.setAttribute("aria-hidden", "true");
 
-        // Porta tutto a stato unlocked: apre la porta e fa emergere la lettera.
-        // La sincronizzazione è gestita in CSS.
         setTimeout(() => {
           state.unlocked = true;
           letterButton.disabled = false;
           setState("unlocked");
         }, 280);
       }
-
-      async function attemptPlay(){
-        // Alcuni browser rifiutano il primo tentativo anche dopo user gesture.
-        // Facciamo un retry limitato per mantenere l'esperienza fluida.
-        if (state.playAttempts >= 3) return;
-        state.playAttempts++;
-
-        // Proviamo anche quando il browser "permette" dopo user gesture.
-        // (su iOS spesso serve un gesto: qui avviene dal click.)
-        try{
-          // Impostazioni esplicite: evitare boolean attributes scritti in HTML.
-          secretVideo.loop = false;
-          // Proviamo prima con audio (se il browser lo consente dopo il click).
-          secretVideo.muted = false;
-          videoLoading.classList.remove("off");
-          videoPlayOverlay.classList.remove("on");
-          await secretVideo.play();
-        }catch(err){
-          // Se il browser blocca audio non-muted, proviamo una volta anche in muted.
-          if (!secretVideo.muted && state.playAttempts < 3) {
-            try{
-              secretVideo.muted = true;
-              videoLoading.classList.remove("off");
-              videoPlayOverlay.classList.remove("on");
-              await secretVideo.play();
-              return;
-            }catch(_err){}
-          }
-
-          // Autoplay bloccato/non supportato/non raggiungibile: mostriamo un chiaro stato.
-          showPlayBlockedUI();
-        }
-      }
-
-      function showPlayBlockedUI(){
-        secretVideo.controls = true; // fallback utile su iOS/Android
-        videoLoading.classList.add("off");
-        videoPlayOverlay.classList.add("on");
-        videoPlayOverlay.setAttribute("aria-hidden", "false");
-      }
-
-      function hidePlayBlockedUI(){
-        videoPlayOverlay.classList.remove("on");
-        videoPlayOverlay.setAttribute("aria-hidden", "true");
-      }
-
-      function enterFullscreenUI(){
-        // Se siamo già in fullscreen API o in fallback, non ripetere.
-        if (document.fullscreenElement) return;
-        if (body.getAttribute("data-ui") === "fs-fallback") return;
-
-        let didRequest = false;
-        try{
-          const req =
-            secretVideo.requestFullscreen ||
-            secretVideo.webkitRequestFullscreen ||
-            secretVideo.msRequestFullscreen;
-          if (typeof req === "function"){
-            didRequest = true;
-            const res = req.call(secretVideo);
-            // Richiesta asincrona: ignoriamo eventuali rifiuti qui.
-            if (res && typeof res.then === "function") res.catch(() => {});
-          }
-        }catch(_e){}
-
-        // Fallback: se dopo un attimo non siamo in fullscreen, espandiamo la UI.
-        // (Su iOS spesso la Fullscreen API viene ignorata.)
-        const waitMs = didRequest ? 650 : 220;
-        setTimeout(() => {
-          if (document.fullscreenElement) return;
-          body.setAttribute("data-ui", "fs-fallback");
-        }, waitMs);
-      }
-
-      function exitFullscreenUI(){
-        try{
-          if (document.fullscreenElement){
-            document.exitFullscreen().catch(() => {});
-          }
-        }catch(_e){}
-        body.removeAttribute("data-ui");
-      }
-
-      fsCloseBtn.addEventListener("click", () => {
-        exitFullscreenUI();
-      });
-
-      document.addEventListener("fullscreenchange", () => {
-        // Se si esce da fullscreen API, rimuoviamo anche il fallback.
-        if (!document.fullscreenElement){
-          body.removeAttribute("data-ui");
-        }
-      });
-
-      // Video loading state
-      secretVideo.addEventListener("loadeddata", () => {
-        videoLoading.classList.add("off");
-      });
-
-      secretVideo.addEventListener("error", () => {
-        // Se l'URL non è raggiungibile o il formato non è supportato.
-        videoLoading.classList.add("off");
-        showPlayBlockedUI();
-      });
-      secretVideo.addEventListener("canplay", () => {
-        // Se nel frattempo l'utente ha già aperto la lettera, tentiamo di nuovo (retry limitato).
-        if (state.letterOpened && state.playAttempts < 3) attemptPlay();
-      });
-      secretVideo.addEventListener("playing", () => {
-        hidePlayBlockedUI();
-      });
-      secretVideo.addEventListener("pause", () => {
-        // Se non stiamo caricando, lascia l'overlay solo quando serve (tentativo fallito).
-      });
 
       gateForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -1173,53 +977,158 @@
           setGateError("");
           lockGate(true);
           revealSafe();
-          // Metti a fuoco per comodità, ma senza ostacolare.
-          setTimeout(() => letterButton.focus({preventScroll:true}), 900);
+          setTimeout(() => letterButton.focus({ preventScroll: true }), 900);
           return;
         }
-
-        // Password errata
         lockGate(false);
         passwordInput.value = "";
         passwordInput.focus();
         gateCard.classList.remove("shake");
-        // Re-trigger CSS animation reliably
-        // eslint-disable-next-line no-unused-expressions
         void gateCard.offsetWidth;
         gateCard.classList.add("shake");
-        setGateError("Non è questa... riprova con calma.");
+        setGateError("Non è questa… riprova con calma.");
       });
 
-      // Letter click -> open envelope -> reveal video -> play
-      letterButton.addEventListener("click", async () => {
-        if (!state.unlocked) return;
-        if (state.letterOpened) return;
-        state.letterOpened = true;
+      /***********************
+       * Modal video
+       ***********************/
+      function openModal(){
+        videoModal.classList.add("active");
+        /* Piccolo rAF per triggerare la transizione opacità */
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => videoModal.classList.add("visible"));
+        });
+        document.body.style.overflow = "hidden";
+        modalCloseBtn.focus({ preventScroll: true });
+        attemptPlay();
+      }
 
-        setState("letter-open");
-        // Il video viene rivelato in risposta a un gesto dell'utente:
-        // proviamo subito lo schermo intero.
-        enterFullscreenUI();
-        // Piccolo delay per far "sentire" l'animazione prima del play.
-        setTimeout(() => {
-          attemptPlay();
-        }, 220);
-      });
+      function closeModal(){
+        secretVideo.pause();
+        secretVideo.currentTime = 0;
+        videoModal.classList.remove("visible");
+        document.body.style.overflow = "";
 
-      // Fallback "Riproduci" button
-      videoPlayBtn.addEventListener("click", async () => {
-        hidePlayBlockedUI();
+        /* Esci da fullscreen se attivo */
         try{
+          if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+          if (document.webkitFullscreenElement) document.webkitExitFullscreen?.();
+        }catch(_){}
+
+        setTimeout(() => {
+          videoModal.classList.remove("active");
+          /* Reset UI */
           videoLoading.classList.remove("off");
-          secretVideo.controls = false; // torna più pulito
-          secretVideo.muted = false;
-          secretVideo.loop = false;
-          enterFullscreenUI();
-          await secretVideo.play();
-        }catch(err){
-          showPlayBlockedUI();
-        }
+          videoPlayOverlay.classList.remove("on");
+          videoPlayOverlay.setAttribute("aria-hidden","true");
+          state.letterOpened = false;
+        }, 350);
+      }
+
+      modalCloseBtn.addEventListener("click", closeModal);
+
+      /* Chiudi anche con Escape */
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && videoModal.classList.contains("active")) closeModal();
       });
+
+      /***********************
+       * Riproduzione video
+       ***********************/
+      async function attemptPlay(){
+        videoLoading.classList.remove("off");
+        videoPlayOverlay.classList.remove("on");
+        videoPlayOverlay.setAttribute("aria-hidden","true");
+
+        try {
+          secretVideo.muted = false;
+          await secretVideo.play();
+        } catch(_) {
+          /* Secondo tentativo: muted (alcuni browser lo richiedono) */
+          try {
+            secretVideo.muted = true;
+            await secretVideo.play();
+          } catch(__) {
+            /* Autoplay bloccato: mostra pulsante manuale */
+            showPlayBtn();
+          }
+        }
+      }
+
+      function showPlayBtn(){
+        videoLoading.classList.add("off");
+        videoPlayOverlay.classList.add("on");
+        videoPlayOverlay.setAttribute("aria-hidden","false");
+        /* Su iOS mostra i controlli nativi come fallback aggiuntivo */
+        secretVideo.controls = true;
+      }
+
+      /* Video pronto */
+      secretVideo.addEventListener("loadeddata", () => {
+        videoLoading.classList.add("off");
+      });
+      secretVideo.addEventListener("canplay", () => {
+        videoLoading.classList.add("off");
+      });
+      secretVideo.addEventListener("playing", () => {
+        videoLoading.classList.add("off");
+        videoPlayOverlay.classList.remove("on");
+        videoPlayOverlay.setAttribute("aria-hidden","true");
+        secretVideo.controls = false;
+      });
+      secretVideo.addEventListener("error", () => {
+        showPlayBtn();
+      });
+      secretVideo.addEventListener("waiting", () => {
+        videoLoading.classList.remove("off");
+      });
+
+      /* Pulsante play manuale */
+      function handleManualPlay(){
+        videoPlayOverlay.classList.remove("on");
+        videoPlayOverlay.setAttribute("aria-hidden","true");
+        secretVideo.controls = false;
+        secretVideo.muted = false;
+        secretVideo.play().catch(() => {
+          secretVideo.controls = true;
+          videoPlayOverlay.classList.add("on");
+          videoPlayOverlay.setAttribute("aria-hidden","false");
+        });
+
+        /* Tenta fullscreen anche qui (Android) */
+        tryNativeFullscreen();
+      }
+      videoPlayBtn.addEventListener("click", handleManualPlay);
+      videoPlayBtn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleManualPlay(); }
+      });
+
+      /* Fullscreen nativo — solo su Android/Desktop dove funziona */
+      function tryNativeFullscreen(){
+        const el = secretVideo;
+        try {
+          const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+          if (typeof req === "function") req.call(el).catch(()=>{});
+        } catch(_){}
+      }
+
+      /***********************
+       * Click sulla lettera
+       ***********************/
+      letterButton.addEventListener("click", () => {
+        if (!state.unlocked || state.letterOpened) return;
+        state.letterOpened = true;
+        setState("letter-open");
+
+        /* Ritardo breve: l'animazione della busta si vede prima dell'apertura modale */
+        setTimeout(() => {
+          openModal();
+          /* Su Android Chrome il fullscreen richiede un gesto utente diretto */
+          tryNativeFullscreen();
+        }, 380);
+      });
+
+      letterButton.disabled = true;
 
       /***********************
        * Background particles
@@ -1227,7 +1136,6 @@
       (function initParticles(){
         const canvas = document.getElementById("bgCanvas");
         const ctx = canvas.getContext("2d", { alpha: true });
-
         let w = 0, h = 0;
         const DPR = Math.min(2, window.devicePixelRatio || 1);
         let particles = [];
@@ -1255,7 +1163,7 @@
               vy: (Math.random() - .5) * (0.06 + r * 0.10),
               a: 0.10 + Math.random() * 0.35,
               size,
-              hue: 40 + Math.random() * 260, // warm->violet
+              hue: 40 + Math.random() * 260,
               tw: 0.6 + Math.random() * 1.8
             };
           });
@@ -1265,10 +1173,8 @@
         function frame(now){
           const dt = Math.min(32, now - t0);
           t0 = now;
-
           ctx.clearRect(0,0,w,h);
 
-          // Light vignette
           const g = ctx.createRadialGradient(w*0.5, h*0.2, 40, w*0.5, h*0.35, Math.max(w,h)*0.85);
           g.addColorStop(0, "rgba(217,179,106,0.10)");
           g.addColorStop(0.5, "rgba(160,90,255,0.05)");
@@ -1279,7 +1185,6 @@
           for (const p of particles){
             p.x += p.vx * dt;
             p.y += p.vy * dt;
-            // wrap
             if (p.x < -10) p.x = w + 10;
             if (p.x > w + 10) p.x = -10;
             if (p.y < -10) p.y = h + 10;
@@ -1293,7 +1198,6 @@
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fill();
           }
-
           requestAnimationFrame(frame);
         }
 
@@ -1301,10 +1205,6 @@
         resize();
         requestAnimationFrame(frame);
       })();
-
-      // La lettera è disabilitata finché non si sblocca la porta.
-      letterButton.disabled = true;
     </script>
   </body>
 </html>
-
