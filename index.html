@@ -930,7 +930,7 @@
                       2) Cambia qui la sorgente del video.
                       Esempio: src="media/video.mp4"
                     -->
-                    <source id="videoSource" src="C:\Users\Utente\Downloads\Should Cat Build A Pickup Truck.mp4" type="video/mp4" />
+                    <source id="videoSource" src="Should Cat Build A Pickup Truck.mp4" type="video/mp4" />
                   </video>
 
                   <div class="video-loading" id="videoLoading" aria-live="polite">
@@ -965,7 +965,7 @@
 
       // 2) Cambia qui la sorgente del video (in alternativa, puoi modificare anche l'elemento <source> sopra).
       // Se lasci questo valore come placeholder, useremo la sorgente già presente nel tag <source>.
-      const VIDEO_SRC = "media/REPLACE_WITH_YOUR_VIDEO.mp4";
+      const VIDEO_SRC = "Should Cat Build A Pickup Truck.mp4";
 
       // 3) Cambia qui il testo della lettera / intro.
       const LETTER_TEXT = {
@@ -1014,7 +1014,7 @@
       // Normalizza anche la sorgente già presente nel markup (se l'hai incollata come path Windows).
       videoSource.src = normalizeLocalWindowsPathToFileUrl(videoSource.getAttribute("src") || videoSource.src);
 
-      const VIDEO_SRC_PLACEHOLDER = "media/REPLACE_WITH_YOUR_VIDEO.mp4";
+      const VIDEO_SRC_PLACEHOLDER = "Should Cat Build A Pickup Truck.mp4";
       if (typeof VIDEO_SRC === "string" && VIDEO_SRC.trim() !== "" && VIDEO_SRC !== VIDEO_SRC_PLACEHOLDER) {
         videoSource.src = normalizeLocalWindowsPathToFileUrl(VIDEO_SRC);
       }
