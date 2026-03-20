@@ -152,57 +152,18 @@
     .s-sub{font-family:var(--fsn);font-weight:200;font-size:clamp(6px,1.5vw,8px);
       letter-spacing:.35em;text-transform:uppercase;color:rgba(184,115,51,.45);margin-top:4px;}
 
-    /* Manopola — grande, realistica, sul lato destro */
+    /* Manopola a ruota a raggi — stile cassaforte bancaria */
     .s-dial-wrap{
-      position:absolute;right:10%;top:50%;transform:translateY(-50%);
-      width:clamp(68px,17vw,86px);height:clamp(68px,17vw,86px);
+      position:absolute;right:8%;top:50%;transform:translateY(-50%);
+      width:clamp(72px,18vw,92px);height:clamp(72px,18vw,92px);
     }
-    /* Ghiera esterna */
-    .s-dial-ring{
-      position:absolute;inset:-5px;border-radius:50%;
-      background:linear-gradient(135deg,rgba(60,40,18,.95),rgba(110,75,30,.9),rgba(50,32,14,.95));
-      border:1px solid rgba(184,115,51,.2);
-      box-shadow:0 0 0 2px rgba(0,0,0,.7),0 8px 22px rgba(0,0,0,.7);
-    }
-    /* Tacche ghiera */
-    .s-dial-ring::before{
-      content:'';position:absolute;inset:4px;border-radius:50%;
-      background:
-        repeating-conic-gradient(rgba(184,115,51,.35) 0deg 3deg, transparent 3deg 12deg);
-    }
-    .s-dial{
-      width:100%;height:100%;border-radius:50%;position:relative;
-      background:
-        radial-gradient(circle at 33% 28%, rgba(140,95,45,.8) 0%, rgba(28,18,8,.96) 60%),
-        conic-gradient(from 0deg,#3d2210 0%,#6e4220 12%,#2a1508 25%,#7a4a22 37%,#1e0e06 50%,#5a3218 62%,#2a1508 75%,#6e4220 87%,#3d2210 100%);
-      border:2px solid rgba(184,115,51,.4);
-      box-shadow:
-        0 0 0 3px rgba(0,0,0,.5),
-        0 0 0 4px rgba(184,115,51,.15),
-        0 8px 24px rgba(0,0,0,.7),
-        inset 0 2px 0 rgba(212,149,106,.35),
-        inset 0 -1px 0 rgba(0,0,0,.6);
+    /* SVG ruota — nessun CSS fallback, usiamo SVG inline nell'HTML */
+    .s-dial-svg{
+      width:100%;height:100%;
+      filter:drop-shadow(0 6px 18px rgba(0,0,0,.75)) drop-shadow(0 0 12px rgba(184,115,51,.22));
       animation:dialTick 9s ease-in-out infinite;
     }
-    @keyframes dialTick{0%,100%{transform:rotate(0)}25%{transform:rotate(-18deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-7deg)}}
-    /* Cerchio interno inciso */
-    .s-dial::before{
-      content:'';position:absolute;inset:8px;border-radius:50%;
-      border:1px solid rgba(184,115,51,.22);
-      background:
-        radial-gradient(circle at 40% 35%, rgba(255,255,255,.06), transparent 50%);
-    }
-    /* Indicatore */
-    .s-dial::after{
-      content:'';position:absolute;width:3px;height:34%;
-      background:linear-gradient(to top,var(--copper),rgba(212,149,106,.5));
-      left:50%;top:10%;transform:translateX(-50%);
-      border-radius:2px;box-shadow:0 0 8px rgba(184,115,51,.5);
-    }
-    /* Tacche sul quadrante */
-    .s-dial-marks{
-      position:absolute;inset:0;border-radius:50%;pointer-events:none;
-    }
+    @keyframes dialTick{0%,100%{transform:rotate(0)}25%{transform:rotate(-22deg)}50%{transform:rotate(12deg)}75%{transform:rotate(-8deg)}}
 
     /* Leva/maniglia più realistica */
     .s-handle{
@@ -594,10 +555,136 @@
             <div class="s-title">Per Te</div>
             <div class="s-sub">un segreto</div>
           </div>
-          <!-- Manopola -->
+          <!-- Manopola ruota a raggi -->
           <div class="s-dial-wrap">
-            <div class="s-dial-ring"></div>
-            <div class="s-dial"><div class="s-dial-marks"></div></div>
+            <svg class="s-dial-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Gradiente radiale corpo ruota -->
+                <radialGradient id="hubGrad" cx="40%" cy="35%" r="65%">
+                  <stop offset="0%" stop-color="#c8904a"/>
+                  <stop offset="40%" stop-color="#7a4a1a"/>
+                  <stop offset="100%" stop-color="#2a1508"/>
+                </radialGradient>
+                <!-- Gradiente raggi -->
+                <linearGradient id="spokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#3a2008"/>
+                  <stop offset="30%" stop-color="#c8904a"/>
+                  <stop offset="50%" stop-color="#e8b870"/>
+                  <stop offset="70%" stop-color="#c8904a"/>
+                  <stop offset="100%" stop-color="#3a2008"/>
+                </linearGradient>
+                <!-- Gradiente anello esterno -->
+                <radialGradient id="rimGrad" cx="50%" cy="30%" r="60%">
+                  <stop offset="0%" stop-color="#d4a050"/>
+                  <stop offset="50%" stop-color="#8a5520"/>
+                  <stop offset="100%" stop-color="#1e1006"/>
+                </radialGradient>
+                <!-- Gradiente pomello raggio -->
+                <radialGradient id="knobGrad" cx="35%" cy="30%" r="65%">
+                  <stop offset="0%" stop-color="#e8c080"/>
+                  <stop offset="60%" stop-color="#a06828"/>
+                  <stop offset="100%" stop-color="#3a1e08"/>
+                </radialGradient>
+                <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur"/>
+                  <feOffset dx="0" dy="1" result="offsetBlur"/>
+                  <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- Ombra esterna ruota -->
+              <circle cx="52" cy="54" r="44" fill="rgba(0,0,0,.45)" filter="url(#innerShadow)"/>
+
+              <!-- Anello esterno (ghiera) -->
+              <circle cx="50" cy="50" r="44" fill="url(#rimGrad)" stroke="#b87333" stroke-width=".8" opacity=".95"/>
+              <!-- Highlight anello -->
+              <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(232,184,112,.35)" stroke-width="1.2"/>
+              <!-- Tacche ghiera: 24 tacche -->
+              <g stroke="rgba(212,149,106,.55)" stroke-width=".9">
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(0   50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(15  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(30  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(45  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(60  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(75  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(90  50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(105 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(120 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(135 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(150 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(165 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(180 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(195 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(210 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(225 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(240 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(255 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(270 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(285 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(300 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(315 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(330 50 50)"/>
+                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(345 50 50)"/>
+              </g>
+              <!-- Bordo interno anello -->
+              <circle cx="50" cy="50" r="37" fill="rgba(0,0,0,.55)" stroke="rgba(100,60,20,.6)" stroke-width=".6"/>
+
+              <!-- 8 RAGGI — ruotati a 45° ciascuno, con sezione rettangolare arrotondata -->
+              <g fill="url(#spokeGrad)" stroke="rgba(60,35,10,.7)" stroke-width=".3">
+                <!-- Ogni raggio: rettangolo dal centro (r~5) al bordo interno (r~36) -->
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(0   50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(45  50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(90  50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(135 50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(180 50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(225 50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(270 50 50)"/>
+                <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(315 50 50)"/>
+              </g>
+              <!-- Highlight raggi -->
+              <g fill="none" stroke="rgba(232,184,112,.3)" stroke-width=".6">
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(0   50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(45  50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(90  50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(135 50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(180 50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(225 50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(270 50 50)"/>
+                <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(315 50 50)"/>
+              </g>
+
+              <!-- Pomelli alle estremità dei raggi (8 sfere) -->
+              <g>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(0   50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(45  50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(90  50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(135 50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(180 50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(225 50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(270 50 50)"/>
+                <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(315 50 50)"/>
+                <!-- Highlight pomelli -->
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(0   50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(45  50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(90  50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(135 50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(180 50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(225 50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(270 50 50)"/>
+                <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(315 50 50)"/>
+              </g>
+
+              <!-- Mozzo centrale -->
+              <circle cx="50" cy="50" r="9" fill="url(#hubGrad)" stroke="rgba(184,115,51,.55)" stroke-width="1.2"/>
+              <circle cx="50" cy="50" r="9" fill="none" stroke="rgba(232,184,112,.25)" stroke-width=".7"/>
+              <!-- Bullone centrale -->
+              <circle cx="50" cy="50" r="4.5" fill="url(#hubGrad)" stroke="rgba(184,115,51,.7)" stroke-width="1"/>
+              <!-- Tacca bullone -->
+              <line x1="50" y1="46.5" x2="50" y2="53.5" stroke="rgba(0,0,0,.5)" stroke-width=".9" stroke-linecap="round"/>
+              <line x1="46.5" y1="50" x2="53.5" y2="50" stroke="rgba(0,0,0,.5)" stroke-width=".9" stroke-linecap="round"/>
+              <!-- Highlight mozzo -->
+              <circle cx="48" cy="47.5" r="2.2" fill="rgba(232,190,120,.18)"/>
+            </svg>
           </div>
           <!-- Maniglia con bulloni -->
           <div class="s-handle">
