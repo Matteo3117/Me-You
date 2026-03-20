@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <title>Segreto su Misura</title>
+    <style>
+      :root{
+        --bg0:#050205;
+        --bg1:#0b0612;
+        --ink:#f6e7ff;
+        --muted:#cbb6e6;
+        --danger:#ff6b86;
+        --gold:#d9b36a;
+        --gold2:#8a5a1f;
+        --glass: rgba(255,255,255,.06);
+        --glass2: rgba(255,255,255,.10);
+        --shadow: rgba(0,0,0,.65);
+        --shadow2: rgba(0,0,0,.35);
+        --ring: rgba(217,179,106,.55);
+        --ok: rgba(120, 220, 160, .85);
+        --safeW: clamp(260px, 78vw, 430px);
+        --safeH: clamp(220px, 62vw, 360px);
+      }
+
+      *{ box-sizing: border-box; }
+      html, body{ height: 100%; }
+      body{
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background:
+          radial-gradient(1200px 600px at 50% 15%, rgba(217,179,106,.20), transparent 60%),
+          radial-gradient(900px 500px at 20% 80%, rgba(176,92,255,.12), transparent 62%),
+          radial-gradient(900px 500px at 85% 75%, rgba(255,120,170,.10), transparent 55%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--ink);
+        overflow-x: hidden;
+      }
+
+      /* Ambient glow layers */
+      .ambient{
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .ambient::before,
+      .ambient::after{
+        content:"";
+        position:absolute;
+        inset:-40%;
+        background:
+          radial-gradient(circle at 25% 30%, rgba(217,179,106,.15), transparent 40%),
+          radial-gradient(circle at 70% 20%, rgba(160,90,255,.12), transparent 38%),
+          radial-gradient(circle at 60% 80%, rgba(255,120,170,.10), transparent 45%);
+        filter: blur(35px);
+        opacity: .85;
+        transform: translate3d(0,0,0);
+        animation: drift 18s ease-in-out infinite;
+      }
+      .ambient::after{
+        opacity: .55;
+        animation-duration: 26s;
+        filter: blur(55px);
+      }
+
+      @keyframes drift{
+        0%{ transform: translate3d(-2%, -1%, 0) scale(1.02) }
+        50%{ transform: translate3d(2%, 1.5%, 0) scale(1.04) }
+        100%{ transform: translate3d(-2%, -1%, 0) scale(1.02) }
+      }
+
+      /* Film grain overlay (no external assets) */
+      .grain{
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: .075;
+        mix-blend-mode: overlay;
+        background:
+          repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0px, rgba(255,255,255,.10) 1px, transparent 1px, transparent 3px),
+          repeating-linear-gradient(90deg, rgba(217,179,106,.12) 0px, rgba(217,179,106,.12) 1px, transparent 1px, transparent 4px),
+          radial-gradient(circle at 20% 10%, rgba(255,255,255,.08), transparent 45%),
+          radial-gradient(circle at 80% 60%, rgba(217,179,106,.06), transparent 55%);
+        filter: contrast(120%) brightness(0.92);
+        animation: grainShift 7s steps(10) infinite;
+      }
+      @keyframes grainShift{
+        0%{ transform: translate3d(0,0,0) }
+        15%{ transform: translate3d(-2%, 1%, 0) }
+        35%{ transform: translate3d(2%, -1%, 0) }
+        55%{ transform: translate3d(-1%, -2%, 0) }
+        75%{ transform: translate3d(1%, 2%, 0) }
+        100%{ transform: translate3d(0,0,0) }
+      }
+
+      /* Particles canvas */
+      #bgCanvas{
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        opacity: .85;
+      }
+
+      .app{
+        position: relative;
+        z-index: 1;
+        min-height: 100%;
+        display: grid;
+        place-items: center;
+        padding: 18px 14px max(18px, env(safe-area-inset-bottom));
+      }
+
+      .scene{
+        width: min(560px, 100%);
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .hidden{ display:none !important; }
+
+      /* Password gate */
+      .gate-card{
+        width: min(520px, 100%);
+        background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+        border: 1px solid rgba(217,179,106,.22);
+        border-radius: 18px;
+        box-shadow:
+          0 30px 80px rgba(0,0,0,.45),
+          0 0 0 1px rgba(255,255,255,.04) inset;
+        padding: 18px 16px 16px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transform: translateZ(0);
+      }
+
+      .gate-shimmer{
+        height: 8px;
+        width: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, transparent, rgba(217,179,106,.45), transparent);
+        opacity: .75;
+        animation: shimmer 2.2s ease-in-out infinite;
+        margin-bottom: 12px;
+      }
+      @keyframes shimmer{
+        0%{ transform: translateX(-22%); opacity: .35 }
+        45%{ opacity: .85 }
+        100%{ transform: translateX(22%); opacity: .35 }
+      }
+
+      .gate-title{
+        margin: 2px 0 10px;
+        font-size: clamp(18px, 4.4vw, 22px);
+        letter-spacing: .2px;
+      }
+      .gate-subtitle{
+        margin: 0 0 14px;
+        color: rgba(246,231,255,.78);
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+
+      .field{
+        display: grid;
+        gap: 10px;
+        align-items: center;
+        justify-items: center;
+        width: 100%;
+      }
+      label{
+        width: 100%;
+        text-align: left;
+        color: rgba(246,231,255,.86);
+        font-size: 13.5px;
+        padding-left: 4px;
+      }
+
+      input[type="password"]{
+        width: 100%;
+        max-width: 360px;
+        height: 46px;
+        border-radius: 12px;
+        padding: 0 14px;
+        border: 1px solid rgba(217,179,106,.28);
+        background: rgba(0,0,0,.22);
+        color: rgba(246,231,255,.96);
+        outline: none;
+        box-shadow:
+          0 12px 25px rgba(0,0,0,.22),
+          0 0 0 1px rgba(255,255,255,.02) inset;
+        transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+      }
+      input[type="password"]:focus{
+        border-color: rgba(217,179,106,.55);
+        box-shadow:
+          0 14px 34px rgba(0,0,0,.30),
+          0 0 0 4px rgba(217,179,106,.18);
+      }
+      .err{
+        height: 18px;
+        font-size: 13px;
+        color: rgba(255,107,134,.95);
+        opacity: 0;
+        transform: translateY(-2px);
+        transition: opacity .22s ease, transform .22s ease;
+        will-change: opacity, transform;
+      }
+      .err.on{
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .btn-row{
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+
+      .btn{
+        appearance: none;
+        border: 1px solid rgba(217,179,106,.35);
+        background: linear-gradient(180deg, rgba(217,179,106,.26), rgba(217,179,106,.12));
+        color: rgba(246,231,255,.96);
+        border-radius: 14px;
+        height: 44px;
+        padding: 0 16px;
+        font-weight: 650;
+        letter-spacing: .2px;
+        cursor: pointer;
+        box-shadow:
+          0 16px 38px rgba(0,0,0,.25),
+          0 0 0 1px rgba(255,255,255,.04) inset;
+        transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+      }
+      .btn:hover{ transform: translateY(-1px); border-color: rgba(217,179,106,.6); }
+      .btn:active{ transform: translateY(0); filter: brightness(1.02); }
+      .btn:focus-visible{
+        outline: none;
+        box-shadow:
+          0 16px 38px rgba(0,0,0,.25),
+          0 0 0 4px rgba(217,179,106,.22);
+      }
+
+      .btn.secondary{
+        border-color: rgba(255,255,255,.18);
+        background: rgba(255,255,255,.06);
+        font-weight: 600;
+      }
+
+      .shake{
+        animation: shake .35s ease-in-out 1;
+      }
+      @keyframes shake{
+        0%{ transform: translateX(0) }
+        20%{ transform: translateX(-6px) }
+        40%{ transform: translateX(6px) }
+        60%{ transform: translateX(-4px) }
+        80%{ transform: translateX(4px) }
+        100%{ transform: translateX(0) }
+      }
+
+      /* Transition between scenes */
+      .fade-out{ animation: fadeOut .45s ease forwards; }
+      .fade-in{ animation: fadeIn .6s ease forwards; }
+      @keyframes fadeOut{
+        from{ opacity: 1; transform: translateY(0) scale(1) }
+        to{ opacity: 0; transform: translateY(8px) scale(.99) }
+      }
+      @keyframes fadeIn{
+        from{ opacity: 0; transform: translateY(10px) scale(.995) }
+        to{ opacity: 1; transform: translateY(0) scale(1) }
+      }
+
+      /* Safe stage */
+      .safe-stage{
+        width: 100%;
+        max-width: calc(var(--safeW) + 80px);
+        display: grid;
+        place-items: center;
+        gap: 14px;
+      }
+      .safe-title{
+        margin: 0;
+        font-size: 13px;
+        color: rgba(246,231,255,.75);
+        letter-spacing: .24px;
+      }
+
+      .safe-wrap{
+        width: var(--safeW);
+        height: var(--safeH);
+        position: relative;
+        display: grid;
+        place-items: center;
+        transform: translateZ(0);
+      }
+
+      .safe{
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        transform-style: preserve-3d;
+        filter: drop-shadow(0 45px 55px rgba(0,0,0,.55));
+      }
+
+      .safe__body{
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02) 30%, rgba(0,0,0,.25)),
+          radial-gradient(800px 260px at 50% 0%, rgba(217,179,106,.18), transparent 55%),
+          linear-gradient(135deg, rgba(217,179,106,.12), rgba(80,30,120,.05));
+        border: 1px solid rgba(217,179,106,.22);
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,.04) inset,
+          0 -30px 90px rgba(0,0,0,.35) inset;
+        overflow: hidden;
+      }
+
+      /* Subtle engraved pattern */
+      .safe__body::before{
+        content:"";
+        position:absolute;
+        inset:-40% -40%;
+        background:
+          repeating-linear-gradient(
+            100deg,
+            rgba(255,255,255,.06) 0px,
+            rgba(255,255,255,.02) 22px,
+            rgba(0,0,0,.06) 44px
+          );
+        opacity: .35;
+        transform: rotate(10deg);
+      }
+
+      .safe__rim{
+        position:absolute;
+        left: 7%;
+        right: 7%;
+        top: 10%;
+        height: 80%;
+        border-radius: 18px;
+        border: 1px solid rgba(217,179,106,.22);
+        background: rgba(0,0,0,.10);
+      }
+
+      /* Door */
+      .door{
+        position:absolute;
+        left: 8%;
+        right: 8%;
+        top: 16%;
+        bottom: 16%;
+        border-radius: 18px;
+        transform-origin: left center;
+        transform: perspective(800px) rotateY(-10deg);
+        transition: transform 1.35s cubic-bezier(.2,.8,.2,1), filter 1.2s ease;
+        background:
+          radial-gradient(900px 280px at 30% 20%, rgba(217,179,106,.18), transparent 45%),
+          linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02) 30%, rgba(0,0,0,.28)),
+          linear-gradient(135deg, rgba(90,30,140,.08), rgba(217,179,106,.10));
+        border: 1px solid rgba(217,179,106,.28);
+        box-shadow:
+          -12px 0 30px rgba(0,0,0,.35),
+          0 0 0 1px rgba(255,255,255,.04) inset;
+        overflow: hidden;
+      }
+
+      .door::after{
+        content:"";
+        position:absolute;
+        inset: -20%;
+        background:
+          repeating-linear-gradient(
+            90deg,
+            rgba(255,255,255,.05) 0px,
+            rgba(255,255,255,.01) 14px,
+            rgba(0,0,0,.05) 30px
+          );
+        opacity: .35;
+        transform: rotate(-8deg);
+      }
+
+      .dial{
+        position:absolute;
+        left: 58%;
+        top: 44%;
+        width: 66px;
+        height: 66px;
+        border-radius: 999px;
+        border: 1px solid rgba(217,179,106,.35);
+        background:
+          radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), rgba(255,255,255,.02) 35%, rgba(0,0,0,.25) 70%),
+          linear-gradient(180deg, rgba(217,179,106,.18), rgba(0,0,0,.22));
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,.05) inset,
+          0 14px 30px rgba(0,0,0,.25);
+      }
+      .dial::before{
+        content:"";
+        position:absolute;
+        inset: 10px;
+        border-radius: 999px;
+        border: 1px dashed rgba(217,179,106,.40);
+        opacity: .65;
+      }
+      .dial::after{
+        content:"";
+        position:absolute;
+        width: 2px;
+        height: 26px;
+        left: 50%;
+        top: 50%;
+        transform-origin: bottom center;
+        background: rgba(217,179,106,.85);
+        border-radius: 2px;
+        transform: translate(-50%, -100%) rotate(18deg);
+        box-shadow: 0 0 14px rgba(217,179,106,.35);
+      }
+
+      .bore{
+        position:absolute;
+        left: 16%;
+        right: 16%;
+        top: 27%;
+        height: 48%;
+        border-radius: 14px;
+        background:
+          radial-gradient(450px 220px at 50% 0%, rgba(0,0,0,.4), rgba(0,0,0,.72) 55%, rgba(0,0,0,.88)),
+          radial-gradient(380px 220px at 50% 30%, rgba(217,179,106,.13), transparent 55%);
+        border: 1px solid rgba(255,255,255,.06);
+        overflow: hidden;
+      }
+
+      /* Safe open glow */
+      .open-glow{
+        position:absolute;
+        left: 14%;
+        right: 14%;
+        top: 14%;
+        bottom: 14%;
+        border-radius: 18px;
+        background: radial-gradient(circle at 50% 18%, rgba(217,179,106,.25), transparent 55%);
+        opacity: 0;
+        transform: scale(.98);
+        transition: opacity .7s ease, transform .7s ease;
+        pointer-events:none;
+      }
+
+      /* Letter emergence */
+      .letter-wrap{
+        position:absolute;
+        left: 50%;
+        top: 62%;
+        transform: translate(-50%, -50%);
+        width: min(92%, 340px);
+        height: 220px;
+        pointer-events: auto;
+      }
+      .letter{
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        pointer-events: none;
+        cursor: pointer;
+        transform: translateY(16px) scale(.92) rotateX(14deg);
+        opacity: 0;
+        filter: blur(2px) saturate(1.05);
+        transition: opacity .65s ease, transform .85s cubic-bezier(.2,.8,.2,1), filter .85s ease;
+        transform-style: preserve-3d;
+      }
+
+      .letter:disabled{
+        cursor: default;
+      }
+
+      .letter:focus-visible{
+        outline: none;
+        filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+      }
+
+      /* Envelope body (front) */
+      .envelope{
+        position:absolute;
+        inset: 0;
+        border-radius: 18px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04)),
+          radial-gradient(520px 220px at 50% 0%, rgba(217,179,106,.18), transparent 56%),
+          linear-gradient(135deg, rgba(180,120,255,.08), rgba(0,0,0,.25));
+        border: 1px solid rgba(217,179,106,.22);
+        box-shadow:
+          0 35px 70px rgba(0,0,0,.38),
+          0 0 0 1px rgba(255,255,255,.04) inset;
+        overflow: hidden;
+        transform: translateZ(0);
+      }
+
+      .envelope::after{
+        content:"";
+        position:absolute;
+        inset:-30%;
+        background:
+          repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.02) 18px, rgba(0,0,0,.05) 42px);
+        opacity: .25;
+        transform: rotate(9deg);
+      }
+
+      /* flap */
+      .flap{
+        position:absolute;
+        left: 12%;
+        right: 12%;
+        top: 42%;
+        height: 44%;
+        transform-origin: top center;
+        background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.16));
+        clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+        border-top: 1px solid rgba(217,179,106,.22);
+        transition: transform .75s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
+        transform: translateY(-2px) rotateX(0deg);
+        opacity: 1;
+      }
+
+      .envelope__front{
+        position:absolute;
+        inset: 0;
+      }
+
+      /* wax seal */
+      .seal{
+        position:absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        left: 50%;
+        top: 28%;
+        transform: translate(-50%, -50%);
+        background:
+          radial-gradient(circle at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,.05) 35%, transparent 55%),
+          radial-gradient(circle at 55% 60%, rgba(0,0,0,.20), transparent 52%),
+          linear-gradient(180deg, #c43a5c, #6f1732);
+        box-shadow:
+          0 16px 35px rgba(0,0,0,.35),
+          0 0 20px rgba(255,80,140,.18);
+        border: 1px solid rgba(255, 190, 206, .18);
+      }
+      .seal::before{
+        content:"";
+        position:absolute;
+        inset: 10px;
+        border-radius: 999px;
+        border: 1px dashed rgba(255, 220, 235, .35);
+        opacity: .75;
+      }
+      .seal::after{
+        content:"LOVE";
+        position:absolute;
+        inset: 0;
+        display:grid;
+        place-items:center;
+        font-size: 16px;
+        color: rgba(255, 235, 245, .92);
+        text-shadow: 0 0 14px rgba(255,235,245,.12);
+      }
+
+      /* handwritten text */
+      .hand{
+        position:absolute;
+        left: 50%;
+        top: 58%;
+        transform: translate(-50%, -50%);
+        width: 82%;
+        text-align: center;
+        font-family: "Brush Script MT", "Segoe Script", "Apple Chancery", "Snell Roundhand", cursive;
+        font-size: clamp(20px, 6vw, 30px);
+        color: rgba(245, 224, 255, .96);
+        text-shadow:
+          0 0 18px rgba(217,179,106,.16),
+          0 0 1px rgba(255,255,255,.10);
+        letter-spacing: .2px;
+        user-select: none;
+        line-height: 1.05;
+      }
+      .hand .thin{
+        display:block;
+        font-size: .74em;
+        color: rgba(203, 182, 230, .92);
+        text-shadow: 0 0 12px rgba(217,179,106,.10);
+      }
+
+      .paper{
+        position:absolute;
+        left: 12%;
+        right: 12%;
+        bottom: 10%;
+        height: 46%;
+        border-radius: 12px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.05)),
+          radial-gradient(360px 140px at 50% 0%, rgba(217,179,106,.20), transparent 55%);
+        border: 1px solid rgba(217,179,106,.16);
+        box-shadow:
+          0 20px 55px rgba(0,0,0,.18),
+          0 0 0 1px rgba(255,255,255,.05) inset;
+        transform: translateY(30px) scale(.98);
+        opacity: 0;
+        transition: transform .75s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
+      }
+
+      /* When letter is revealed (unlocked door done) */
+      body[data-state="unlocked"] .open-glow{ opacity: 1; transform: scale(1); }
+      body[data-state="unlocked"] .door{ transform: perspective(800px) rotateY(86deg) translateX(6px); filter: saturate(1.08); }
+      body[data-state="unlocked"] .letter{
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(-18px) scale(1) rotateX(0deg);
+        filter: blur(0px) saturate(1.12);
+      }
+
+      /* Make safe slightly more alive when unlocked */
+      body[data-state="unlocked"] .safe{
+        filter: drop-shadow(0 55px 65px rgba(0,0,0,.62)) drop-shadow(0 0 55px rgba(217,179,106,.16));
+      }
+
+      /* When envelope opened */
+      body[data-state="letter-open"] .flap{
+        transform: rotateX(66deg) translateY(-2px);
+        opacity: .98;
+      }
+      body[data-state="letter-open"] .paper{
+        transform: translateY(-22px) scale(1);
+        opacity: 1;
+      }
+
+      /* Move paper & reveal video */
+      .video-panel{
+        position:absolute;
+        left: 50%;
+        top: 92%;
+        transform: translate(-50%, -30%);
+        width: min(92%, 520px);
+        max-width: 520px;
+        border-radius: 18px;
+        border: 1px solid rgba(217,179,106,.22);
+        background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+        box-shadow:
+          0 30px 75px rgba(0,0,0,.42),
+          0 0 0 1px rgba(255,255,255,.04) inset;
+        padding: 12px;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity .6s ease, max-height .7s ease;
+        pointer-events: none;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      body[data-state="letter-open"] .video-panel{
+        opacity: 1;
+        max-height: 420px;
+        pointer-events: auto;
+      }
+
+      /* Fullscreen (API fallback) */
+      .fs-close{
+        position:absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 5;
+        display: none;
+        appearance: none;
+        border: 1px solid rgba(217,179,106,.45);
+        background: rgba(0,0,0,.35);
+        color: rgba(246,231,255,.96);
+        border-radius: 999px;
+        height: 44px;
+        padding: 0 14px;
+        font-weight: 750;
+        letter-spacing: .2px;
+        cursor: pointer;
+        box-shadow: 0 22px 55px rgba(0,0,0,.40);
+      }
+      .fs-close:focus-visible{
+        outline: none;
+        box-shadow:
+          0 22px 55px rgba(0,0,0,.40),
+          0 0 0 4px rgba(217,179,106,.22);
+      }
+
+      body[data-ui="fs-fallback"] .video-panel{
+        pointer-events: auto;
+        position: fixed;
+        inset: 0;
+        top: 0;
+        left: 0;
+        transform: none;
+        z-index: 50;
+        max-height: none;
+        width: 100%;
+        height: 100%;
+        padding: 16px;
+        margin: 0;
+        opacity: 1;
+        background: rgba(0,0,0,.55);
+      }
+      body[data-ui="fs-fallback"] .video-frame{
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        aspect-ratio: auto;
+      }
+      body[data-ui="fs-fallback"] .caption{
+        display: none;
+      }
+      body[data-ui="fs-fallback"] .fs-close{
+        display: inline-flex;
+        align-items:center;
+        gap: 10px;
+      }
+
+      .video-frame{
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(0,0,0,.18);
+        position: relative;
+        aspect-ratio: 16/9;
+        width: 100%;
+        max-width: 520px;
+      }
+      video{
+        width: 100%;
+        height: 100%;
+        display:block;
+        object-fit: cover;
+        background: #08050b;
+      }
+
+      .video-loading{
+        position:absolute;
+        inset:0;
+        display:grid;
+        place-items:center;
+        gap: 10px;
+        background: radial-gradient(circle at 50% 30%, rgba(217,179,106,.12), rgba(0,0,0,.35));
+        opacity: 1;
+        transition: opacity .25s ease;
+        pointer-events: none;
+      }
+      .video-loading.off{ opacity: 0; }
+
+      .spinner{
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 2px solid rgba(217,179,106,.25);
+        border-top-color: rgba(217,179,106,.85);
+        animation: spin 1s linear infinite;
+        box-shadow: 0 0 20px rgba(217,179,106,.18);
+      }
+      @keyframes spin{ to{ transform: rotate(360deg) } }
+      .loading-text{
+        font-size: 13px;
+        color: rgba(246,231,255,.78);
+        letter-spacing: .18px;
+      }
+
+      .video-playOverlay{
+        position:absolute;
+        inset:0;
+        display:grid;
+        place-items:center;
+        background: radial-gradient(circle at 50% 30%, rgba(217,179,106,.14), rgba(0,0,0,.45));
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity .25s ease, transform .25s ease;
+        pointer-events: none;
+        padding: 16px;
+      }
+      .video-playOverlay.on{
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .play-btn{
+        display:flex;
+        align-items:center;
+        gap: 10px;
+        border-radius: 999px;
+        height: 48px;
+        padding: 0 16px;
+        border: 1px solid rgba(217,179,106,.45);
+        background: linear-gradient(180deg, rgba(217,179,106,.24), rgba(0,0,0,.12));
+        color: rgba(246,231,255,.96);
+        font-weight: 750;
+        letter-spacing: .2px;
+        cursor: pointer;
+        box-shadow: 0 22px 55px rgba(0,0,0,.40);
+      }
+      .play-tri{
+        width: 0; height: 0;
+        border-left: 12px solid rgba(246,231,255,.96);
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        filter: drop-shadow(0 0 12px rgba(217,179,106,.25));
+      }
+
+      .caption{
+        margin: 8px 0 0;
+        font-size: 13px;
+        color: rgba(246,231,255,.78);
+        line-height: 1.45;
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce){
+        .ambient::before, .ambient::after, .gate-shimmer{ animation: none !important; }
+        .shake{ animation: none !important; }
+        .fade-out, .fade-in{ animation: none !important; }
+      }
+
+      /* Small screens: keep safe and letter fully visible */
+      @media (max-width: 420px){
+        :root{ --safeH: clamp(210px, 68vw, 340px); }
+        .video-panel{ top: 96%; transform: translate(-50%, -40%); }
+      }
+    </style>
+  </head>
+  <body data-state="gate">
+    <canvas id="bgCanvas" aria-hidden="true"></canvas>
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="app">
+      <!-- Password gate -->
+      <section class="scene" id="gateScene" aria-label="Password gate">
+        <div class="gate-card" id="gateCard" role="region" aria-describedby="gateErrorText">
+          <div class="gate-shimmer" aria-hidden="true"></div>
+          <h1 class="gate-title">Inserisci La Combinazione</h1>
+          <p class="gate-subtitle" id="gateSub">
+            ❤️❤️❤️❤️❤️❤️❤️❤️
+          </p>
+
+          <form class="field" id="gateForm" autocomplete="off">
+            <label for="passwordInput">Password</label>
+            <input
+              id="passwordInput"
+              name="password"
+              type="password"
+              inputmode="text"
+              autocomplete="off"
+              required
+              minlength="1"
+              maxlength="64"
+              aria-label="Inserisci la password"
+            />
+            <div class="err" id="gateErrorText" aria-live="polite"></div>
+
+            <div class="btn-row">
+              <button class="btn" type="submit" id="unlockBtn">Sblocca</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Safe scene -->
+      <section class="safe-stage hidden" id="safeScene" aria-label="Safe scene">
+        <p class="safe-title"></p>
+
+        <div class="safe-wrap">
+          <div class="safe" aria-hidden="true">
+            <div class="safe__body"></div>
+            <div class="safe__rim"></div>
+
+            <div class="open-glow"></div>
+            <div class="bore"></div>
+
+            <div class="door" id="door">
+              <div class="dial"></div>
+            </div>
+
+            <div class="letter-wrap" aria-hidden="false">
+              <button
+                class="letter"
+                id="letterButton"
+                type="button"
+                aria-label="Apri la lettera segreta"
+              >
+                <div class="envelope">
+                  <div class="envelope__front">
+                    <div class="seal" aria-hidden="true"></div>
+                    <div class="hand" aria-hidden="true">
+                      <span class="thin" id="handLine1">Per te</span>
+                      <span id="handLine2">Amore mio</span>
+                    </div>
+                  </div>
+                  <div class="flap" aria-hidden="true"></div>
+                  <div class="paper" aria-hidden="true"></div>
+                </div>
+              </button>
+
+              <div class="video-panel" id="videoPanel" aria-label="Video segreto">
+                <button class="fs-close" type="button" id="fsCloseBtn" aria-label="Chiudi video">
+                  Chiudi
+                </button>
+                <div class="video-frame">
+                  <video
+                    id="secretVideo"
+                    playsinline
+                    preload="metadata"
+                    aria-label="Video segreto"
+                  >
+                    <!--
+                      2) Cambia qui la sorgente del video.
+                      Esempio: src="media/video.mp4"
+                    -->
+                    <source id="videoSource" src="C:\Users\Utente\Downloads\Should Cat Build A Pickup Truck.mp4" type="video/mp4" />
+                  </video>
+
+                  <div class="video-loading" id="videoLoading" aria-live="polite">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <div class="loading-text">La lettera si sta aprendo...</div>
+                  </div>
+
+                  <div class="video-playOverlay" id="videoPlayOverlay" aria-hidden="true">
+                    <button class="play-btn" type="button" id="videoPlayBtn">
+                      <span class="play-tri" aria-hidden="true"></span>
+                      <span>Riproduci</span>
+                    </button>
+                  </div>
+                </div>
+
+                <p class="caption">
+                  Se il browser blocca l'autoplay, premi "Riproduci" per avviare il video.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      /***********************
+       * CONFIG (editabili)
+       ***********************/
+      // 1) Cambia qui la password (controllo solo client-side, per ora).
+      const PASSWORD = "010226";
+
+      // 2) Cambia qui la sorgente del video (in alternativa, puoi modificare anche l'elemento <source> sopra).
+      // Se lasci questo valore come placeholder, useremo la sorgente già presente nel tag <source>.
+      const VIDEO_SRC = "media/REPLACE_WITH_YOUR_VIDEO.mp4";
+
+      // 3) Cambia qui il testo della lettera / intro.
+      const LETTER_TEXT = {
+        line1: "Per te",
+        line2: "Amore mio"
+      };
+
+      /***********************
+       * Elementi
+       ***********************/
+      const state = {
+        unlocked: false,
+        letterOpened: false,
+        playAttempts: 0
+      };
+
+      const body = document.body;
+      const gateScene = document.getElementById("gateScene");
+      const safeScene = document.getElementById("safeScene");
+      const gateCard = document.getElementById("gateCard");
+      const gateForm = document.getElementById("gateForm");
+      const unlockBtn = document.getElementById("unlockBtn");
+      const passwordInput = document.getElementById("passwordInput");
+      const gateErrorText = document.getElementById("gateErrorText");
+
+      const letterButton = document.getElementById("letterButton");
+      const secretVideo = document.getElementById("secretVideo");
+      const videoLoading = document.getElementById("videoLoading");
+      const videoPlayOverlay = document.getElementById("videoPlayOverlay");
+      const videoPlayBtn = document.getElementById("videoPlayBtn");
+      const fsCloseBtn = document.getElementById("fsCloseBtn");
+
+      const handLine1 = document.getElementById("handLine1");
+      const handLine2 = document.getElementById("handLine2");
+
+      const videoSource = document.getElementById("videoSource");
+      function normalizeLocalWindowsPathToFileUrl(s){
+        const input = String(s || "").trim();
+        // Windows assoluto: C:\Users\...  -> file:///C:/Users/...
+        if (/^[a-zA-Z]:[\\/]/.test(input)){
+          return "file:///" + input.replace(/\\/g, "/");
+        }
+        return input;
+      }
+
+      // Normalizza anche la sorgente già presente nel markup (se l'hai incollata come path Windows).
+      videoSource.src = normalizeLocalWindowsPathToFileUrl(videoSource.getAttribute("src") || videoSource.src);
+
+      const VIDEO_SRC_PLACEHOLDER = "media/REPLACE_WITH_YOUR_VIDEO.mp4";
+      if (typeof VIDEO_SRC === "string" && VIDEO_SRC.trim() !== "" && VIDEO_SRC !== VIDEO_SRC_PLACEHOLDER) {
+        videoSource.src = normalizeLocalWindowsPathToFileUrl(VIDEO_SRC);
+      }
+
+      handLine1.textContent = LETTER_TEXT.line1;
+      handLine2.textContent = LETTER_TEXT.line2;
+
+      function setGateError(msg){
+        gateErrorText.textContent = msg || "";
+        gateErrorText.classList.toggle("on", Boolean(msg));
+      }
+
+      function setState(next){
+        body.setAttribute("data-state", next);
+      }
+
+      function lockGate(locked){
+        unlockBtn.disabled = locked;
+        passwordInput.disabled = locked;
+      }
+
+      function revealSafe(){
+        safeScene.classList.remove("hidden");
+        safeScene.classList.add("fade-in");
+        gateScene.classList.add("fade-out");
+        gateScene.style.pointerEvents = "none";
+        gateScene.setAttribute("aria-hidden", "true");
+
+        // Porta tutto a stato unlocked: apre la porta e fa emergere la lettera.
+        // La sincronizzazione è gestita in CSS.
+        setTimeout(() => {
+          state.unlocked = true;
+          letterButton.disabled = false;
+          setState("unlocked");
+        }, 280);
+      }
+
+      async function attemptPlay(){
+        // Alcuni browser rifiutano il primo tentativo anche dopo user gesture.
+        // Facciamo un retry limitato per mantenere l'esperienza fluida.
+        if (state.playAttempts >= 3) return;
+        state.playAttempts++;
+
+        // Proviamo anche quando il browser "permette" dopo user gesture.
+        // (su iOS spesso serve un gesto: qui avviene dal click.)
+        try{
+          // Impostazioni esplicite: evitare boolean attributes scritti in HTML.
+          secretVideo.loop = false;
+          // Proviamo prima con audio (se il browser lo consente dopo il click).
+          secretVideo.muted = false;
+          videoLoading.classList.remove("off");
+          videoPlayOverlay.classList.remove("on");
+          await secretVideo.play();
+        }catch(err){
+          // Se il browser blocca audio non-muted, proviamo una volta anche in muted.
+          if (!secretVideo.muted && state.playAttempts < 3) {
+            try{
+              secretVideo.muted = true;
+              videoLoading.classList.remove("off");
+              videoPlayOverlay.classList.remove("on");
+              await secretVideo.play();
+              return;
+            }catch(_err){}
+          }
+
+          // Autoplay bloccato/non supportato/non raggiungibile: mostriamo un chiaro stato.
+          showPlayBlockedUI();
+        }
+      }
+
+      function showPlayBlockedUI(){
+        secretVideo.controls = true; // fallback utile su iOS/Android
+        videoLoading.classList.add("off");
+        videoPlayOverlay.classList.add("on");
+        videoPlayOverlay.setAttribute("aria-hidden", "false");
+      }
+
+      function hidePlayBlockedUI(){
+        videoPlayOverlay.classList.remove("on");
+        videoPlayOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      function enterFullscreenUI(){
+        // Se siamo già in fullscreen API o in fallback, non ripetere.
+        if (document.fullscreenElement) return;
+        if (body.getAttribute("data-ui") === "fs-fallback") return;
+
+        let didRequest = false;
+        try{
+          const req =
+            secretVideo.requestFullscreen ||
+            secretVideo.webkitRequestFullscreen ||
+            secretVideo.msRequestFullscreen;
+          if (typeof req === "function"){
+            didRequest = true;
+            const res = req.call(secretVideo);
+            // Richiesta asincrona: ignoriamo eventuali rifiuti qui.
+            if (res && typeof res.then === "function") res.catch(() => {});
+          }
+        }catch(_e){}
+
+        // Fallback: se dopo un attimo non siamo in fullscreen, espandiamo la UI.
+        // (Su iOS spesso la Fullscreen API viene ignorata.)
+        const waitMs = didRequest ? 650 : 220;
+        setTimeout(() => {
+          if (document.fullscreenElement) return;
+          body.setAttribute("data-ui", "fs-fallback");
+        }, waitMs);
+      }
+
+      function exitFullscreenUI(){
+        try{
+          if (document.fullscreenElement){
+            document.exitFullscreen().catch(() => {});
+          }
+        }catch(_e){}
+        body.removeAttribute("data-ui");
+      }
+
+      fsCloseBtn.addEventListener("click", () => {
+        exitFullscreenUI();
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        // Se si esce da fullscreen API, rimuoviamo anche il fallback.
+        if (!document.fullscreenElement){
+          body.removeAttribute("data-ui");
+        }
+      });
+
+      // Video loading state
+      secretVideo.addEventListener("loadeddata", () => {
+        videoLoading.classList.add("off");
+      });
+
+      secretVideo.addEventListener("error", () => {
+        // Se l'URL non è raggiungibile o il formato non è supportato.
+        videoLoading.classList.add("off");
+        showPlayBlockedUI();
+      });
+      secretVideo.addEventListener("canplay", () => {
+        // Se nel frattempo l'utente ha già aperto la lettera, tentiamo di nuovo (retry limitato).
+        if (state.letterOpened && state.playAttempts < 3) attemptPlay();
+      });
+      secretVideo.addEventListener("playing", () => {
+        hidePlayBlockedUI();
+      });
+      secretVideo.addEventListener("pause", () => {
+        // Se non stiamo caricando, lascia l'overlay solo quando serve (tentativo fallito).
+      });
+
+      gateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const entered = String(passwordInput.value || "");
+        if (entered === PASSWORD){
+          setGateError("");
+          lockGate(true);
+          revealSafe();
+          // Metti a fuoco per comodità, ma senza ostacolare.
+          setTimeout(() => letterButton.focus({preventScroll:true}), 900);
+          return;
+        }
+
+        // Password errata
+        lockGate(false);
+        passwordInput.value = "";
+        passwordInput.focus();
+        gateCard.classList.remove("shake");
+        // Re-trigger CSS animation reliably
+        // eslint-disable-next-line no-unused-expressions
+        void gateCard.offsetWidth;
+        gateCard.classList.add("shake");
+        setGateError("Non è questa... riprova con calma.");
+      });
+
+      // Letter click -> open envelope -> reveal video -> play
+      letterButton.addEventListener("click", async () => {
+        if (!state.unlocked) return;
+        if (state.letterOpened) return;
+        state.letterOpened = true;
+
+        setState("letter-open");
+        // Il video viene rivelato in risposta a un gesto dell'utente:
+        // proviamo subito lo schermo intero.
+        enterFullscreenUI();
+        // Piccolo delay per far "sentire" l'animazione prima del play.
+        setTimeout(() => {
+          attemptPlay();
+        }, 220);
+      });
+
+      // Fallback "Riproduci" button
+      videoPlayBtn.addEventListener("click", async () => {
+        hidePlayBlockedUI();
+        try{
+          videoLoading.classList.remove("off");
+          secretVideo.controls = false; // torna più pulito
+          secretVideo.muted = false;
+          secretVideo.loop = false;
+          enterFullscreenUI();
+          await secretVideo.play();
+        }catch(err){
+          showPlayBlockedUI();
+        }
+      });
+
+      /***********************
+       * Background particles
+       ***********************/
+      (function initParticles(){
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d", { alpha: true });
+
+        let w = 0, h = 0;
+        const DPR = Math.min(2, window.devicePixelRatio || 1);
+        let particles = [];
+
+        function resize(){
+          w = window.innerWidth;
+          h = window.innerHeight;
+          canvas.width = Math.floor(w * DPR);
+          canvas.height = Math.floor(h * DPR);
+          canvas.style.width = w + "px";
+          canvas.style.height = h + "px";
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          spawn();
+        }
+
+        function spawn(){
+          const count = Math.round(Math.min(90, Math.max(40, (w * h) / 18000)));
+          particles = new Array(count).fill(0).map(() => {
+            const r = Math.random();
+            const size = 0.6 + Math.random() * 1.8;
+            return {
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: (Math.random() - .5) * (0.08 + r * 0.12),
+              vy: (Math.random() - .5) * (0.06 + r * 0.10),
+              a: 0.10 + Math.random() * 0.35,
+              size,
+              hue: 40 + Math.random() * 260, // warm->violet
+              tw: 0.6 + Math.random() * 1.8
+            };
+          });
+        }
+
+        let t0 = performance.now();
+        function frame(now){
+          const dt = Math.min(32, now - t0);
+          t0 = now;
+
+          ctx.clearRect(0,0,w,h);
+
+          // Light vignette
+          const g = ctx.createRadialGradient(w*0.5, h*0.2, 40, w*0.5, h*0.35, Math.max(w,h)*0.85);
+          g.addColorStop(0, "rgba(217,179,106,0.10)");
+          g.addColorStop(0.5, "rgba(160,90,255,0.05)");
+          g.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = g;
+          ctx.fillRect(0,0,w,h);
+
+          for (const p of particles){
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            // wrap
+            if (p.x < -10) p.x = w + 10;
+            if (p.x > w + 10) p.x = -10;
+            if (p.y < -10) p.y = h + 10;
+            if (p.y > h + 10) p.y = -10;
+
+            const twinkle = 0.65 + 0.35 * Math.sin((now/1000) * p.tw + p.x * 0.01);
+            const alpha = p.a * twinkle;
+
+            ctx.beginPath();
+            ctx.fillStyle = `hsla(${p.hue}, 85%, 70%, ${alpha})`;
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          requestAnimationFrame(frame);
+        }
+
+        window.addEventListener("resize", resize, { passive: true });
+        resize();
+        requestAnimationFrame(frame);
+      })();
+
+      // La lettera è disabilitata finché non si sblocca la porta.
+      letterButton.disabled = true;
+    </script>
+  </body>
+</html>
+
