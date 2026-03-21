@@ -409,16 +409,15 @@
       animation:pulse 2.6s ease-in-out infinite;}
     @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
 
-    /* ── VIDEO MODAL (YouTube iframe + poster) ── */
+    /* ── VIDEO MODAL (link diretto YouTube) ── */
     .vmod{
       display:none;position:fixed;inset:0;z-index:200;
       background:rgba(0,0,0,0);transition:background .4s ease;
-      align-items:center;justify-content:center;flex-direction:column;
+      align-items:center;justify-content:center;flex-direction:column;gap:28px;
     }
     .vmod.active{display:flex;background:rgba(4,2,7,.96);}
     .vmod.vis{background:rgba(4,2,7,.99);}
 
-    /* Bottone chiudi */
     .vclose{
       position:fixed;top:max(12px,env(safe-area-inset-top,12px));right:max(12px,env(safe-area-inset-right,12px));
       z-index:210;appearance:none;width:44px;height:44px;border-radius:50%;
@@ -426,88 +425,79 @@
       color:rgba(245,232,211,.92);font-size:17px;
       display:flex;align-items:center;justify-content:center;cursor:pointer;
       backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-      box-shadow:0 6px 22px rgba(0,0,0,.6);transition:transform .14s,background .14s;
+      box-shadow:0 6px 22px rgba(0,0,0,.6);transition:transform .14s;
       -webkit-tap-highlight-color:transparent;
     }
-    .vclose:active{transform:scale(.88);background:rgba(30,18,8,.9);}
+    .vclose:active{transform:scale(.88);}
 
-    /* Contenitore formato Short 9:16 */
-    .vframe-wrap{
-      position:relative;
-      height:min(88dvh, calc(100vw * 16/9));
-      width:min(calc(88dvh * 9/16), 96vw);
-      max-width:400px;
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 0 0 1px rgba(184,115,51,.2), 0 40px 100px rgba(0,0,0,.8);
+    /* Card centrale del modal */
+    .vcard{
+      width:min(340px,88vw);
+      background:linear-gradient(155deg,rgba(38,26,16,.97),rgba(18,12,7,.99));
+      border:1px solid rgba(184,115,51,.28);border-radius:22px;
+      padding:32px 24px 28px;
+      box-shadow:0 40px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(184,115,51,.12);
+      display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+    }
+
+    /* Thumbnail YouTube */
+    .vcard-thumb{
+      width:100%;aspect-ratio:9/16;max-height:42dvh;
+      border-radius:12px;overflow:hidden;
+      border:1px solid rgba(184,115,51,.18);
       background:#000;
+      position:relative;
     }
-    .vframe-wrap iframe{
-      position:absolute;inset:0;width:100%;height:100%;border:none;z-index:3;
+    .vcard-thumb img{
+      width:100%;height:100%;object-fit:cover;display:block;
     }
-
-    /* Poster thumbnail + pulsante play */
-    .vframe-poster{
-      position:absolute;inset:0;z-index:2;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      cursor:pointer;background:#000;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .vframe-poster img{
-      position:absolute;inset:0;width:100%;height:100%;
-      object-fit:cover;
-      transition:transform .3s ease,filter .3s ease;
-    }
-    .vframe-poster::before{
+    /* overlay dorato sulla thumb */
+    .vcard-thumb::after{
       content:'';position:absolute;inset:0;
-      background:rgba(4,2,7,.4);z-index:1;
-      transition:background .25s;
+      background:linear-gradient(180deg,transparent 55%,rgba(4,2,7,.6) 100%);
     }
-    .vframe-poster:hover::before{background:rgba(4,2,7,.55);}
-    .vframe-poster:hover img{transform:scale(1.03);}
 
-    .vframe-play{
-      position:relative;z-index:2;
-      width:80px;height:80px;border-radius:50%;
-      background:rgba(6,4,10,.7);
-      border:2px solid rgba(184,115,51,.65);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 0 10px rgba(184,115,51,.1),0 12px 40px rgba(0,0,0,.6);
-      transition:transform .2s,box-shadow .2s,background .2s;
+    .vcard-title{
+      font-family:var(--fsc);font-size:clamp(20px,5vw,26px);
+      color:var(--cream);
+      text-shadow:0 0 20px rgba(184,115,51,.2);
     }
-    .vframe-poster:hover .vframe-play,
-    .vframe-poster:active .vframe-play{
-      transform:scale(1.1);background:rgba(184,115,51,.2);
-      box-shadow:0 0 0 14px rgba(184,115,51,.14),0 16px 50px rgba(0,0,0,.7);
-    }
-    .vframe-play-tri{
-      width:0;height:0;
-      border-left:28px solid rgba(245,232,211,.96);
-      border-top:16px solid transparent;border-bottom:16px solid transparent;
-      margin-left:6px;
-      filter:drop-shadow(0 0 10px rgba(184,115,51,.4));
-    }
-    .vframe-label{
-      position:relative;z-index:2;margin-top:16px;
+    .vcard-sub{
       font-family:var(--fsn);font-weight:200;
-      font-size:11px;letter-spacing:.3em;text-transform:uppercase;
-      color:rgba(245,232,211,.7);
-      text-shadow:0 1px 6px rgba(0,0,0,.9);
+      font-size:clamp(10px,2.5vw,11px);letter-spacing:.22em;text-transform:uppercase;
+      color:rgba(184,115,51,.6);margin-top:-10px;
     }
 
-    /* Spinner post-tap */
-    .vframe-loading{
-      position:absolute;inset:0;z-index:4;
-      display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;
-      background:rgba(4,2,7,.92);
+    /* Pulsante apri YouTube */
+    .vcard-btn{
+      display:flex;align-items:center;gap:12px;
+      width:100%;height:56px;border-radius:14px;
+      appearance:none;border:none;cursor:pointer;
+      background:linear-gradient(155deg,rgba(184,115,51,.28),rgba(122,69,32,.35));
+      border:1px solid rgba(184,115,51,.45);
+      color:rgba(245,232,211,.96);
+      font-family:var(--fsn);font-weight:300;
+      font-size:clamp(12px,3vw,14px);letter-spacing:.15em;text-transform:uppercase;
+      text-decoration:none;
+      box-shadow:0 8px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(212,149,106,.15);
+      transition:transform .15s,box-shadow .15s,background .15s;
+      -webkit-tap-highlight-color:transparent;
+      justify-content:center;
     }
-    .vframe-loading.on{display:flex;}
-    .spinner{width:42px;height:42px;border-radius:50%;
-      border:2px solid rgba(184,115,51,.18);border-top-color:rgba(184,115,51,.88);
-      animation:spin 1s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .vload-t{font-family:var(--fsn);font-weight:200;font-size:11px;letter-spacing:.22em;
-      text-transform:uppercase;color:rgba(184,115,51,.55);}
+    .vcard-btn:hover{
+      background:linear-gradient(155deg,rgba(184,115,51,.38),rgba(122,69,32,.45));
+      box-shadow:0 12px 36px rgba(0,0,0,.45);
+    }
+    .vcard-btn:active{transform:scale(.96);}
+
+    /* Icona YouTube inline SVG */
+    .yt-icon{width:26px;height:26px;flex-shrink:0;}
+
+    .vcard-note{
+      font-family:var(--fsn);font-weight:200;
+      font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+      color:rgba(184,115,51,.38);
+    }
 
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
   </style>
@@ -725,29 +715,36 @@
   <!-- VIDEO MODAL -->
   <div class="vmod" id="vmod" role="dialog" aria-modal="true" aria-label="Video">
     <button class="vclose" id="vclose" type="button" aria-label="Chiudi">✕</button>
-    <div class="vframe-wrap">
-      <!-- Spinner visibile dopo il tap, mentre l'iframe carica -->
-      <div class="vframe-loading" id="vloading">
-        <div class="spinner"></div>
-        <div class="vload-t">caricamento…</div>
+
+    <div class="vcard">
+      <!-- Thumbnail Short -->
+      <div class="vcard-thumb">
+        <img src="https://img.youtube.com/vi/Y9mu9-3wnPc/hqdefault.jpg" alt="Anteprima video"/>
       </div>
-      <!-- Poster con thumbnail YouTube + pulsante play -->
-      <div class="vframe-poster" id="vposter" role="button" tabindex="0" aria-label="Riproduci il video">
-        <img id="vthumb" src="" alt=""/>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="vframe-play"><div class="vframe-play-tri"></div></div>
-          <div class="vframe-label">Tocca per riprodurre</div>
-        </div>
+
+      <div>
+        <div class="vcard-title">Il tuo video</div>
+        <div class="vcard-sub">ti aspetta su YouTube</div>
       </div>
-      <!-- Iframe inserito solo dopo il tap (gesto utente → autoplay permesso) -->
-      <div id="vframe-slot"></div>
+
+      <!-- Link che apre YouTube nell'app nativa -->
+      <a class="vcard-btn" id="ytLink"
+         href="https://www.youtube.com/shorts/Y9mu9-3wnPc"
+         target="_blank" rel="noopener noreferrer">
+        <svg class="yt-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="5" fill="#FF0000"/>
+          <polygon points="9.5,7.5 17,12 9.5,16.5" fill="white"/>
+        </svg>
+        Guarda su YouTube
+      </a>
+
+      <div class="vcard-note">si aprirà l'app YouTube</div>
     </div>
   </div>
 
   <script>
     /* ── CONFIG ── */
     const PASSWORD = "010226";
-    const YT_ID    = "Y9mu9-3wnPc"; // ID dello Short YouTube
     const PLEN     = PASSWORD.length;
 
     /* ── STATO ── */
@@ -767,10 +764,6 @@
     const letterBtn = document.getElementById('letterBtn');
     const vmod      = document.getElementById('vmod');
     const vclose    = document.getElementById('vclose');
-    const vposter   = document.getElementById('vposter');
-    const vthumb    = document.getElementById('vthumb');
-    const vloading  = document.getElementById('vloading');
-    const vframeSlot= document.getElementById('vframe-slot');
 
     /* ── NAVIGAZIONE ── */
     function goTo(id) {
@@ -833,41 +826,18 @@
       requestAnimationFrame(() => requestAnimationFrame(() => vmod.classList.add('vis')));
       document.body.style.overflow = 'hidden';
       vclose.focus({ preventScroll: true });
-      /* Mostra il poster con la thumbnail di YouTube */
-      vthumb.src = `https://img.youtube.com/vi/${YT_ID}/hqdefault.jpg`;
-      vposter.style.display = 'flex';
-      vloading.classList.remove('on');
-      vframeSlot.innerHTML = '';
     }
-
-    /* Tap sul poster → carica iframe con autoplay (gesto utente diretto) */
-    function startVideo() {
-      vposter.style.display = 'none';
-      vloading.classList.add('on');
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${YT_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
-      iframe.allow = 'autoplay; fullscreen; picture-in-picture';
-      iframe.allowFullscreen = true;
-      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:3;';
-      iframe.addEventListener('load', () => { setTimeout(() => vloading.classList.remove('on'), 1000); });
-      vframeSlot.appendChild(iframe);
-    }
-    vposter.addEventListener('click', startVideo);
-    vposter.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); startVideo(); } });
 
     function closeModal() {
       vmod.classList.remove('vis');
       document.body.style.overflow = '';
-      setTimeout(() => {
-        vmod.classList.remove('active');
-        vframeSlot.innerHTML = '';          /* ferma il video distruggendo l'iframe */
-        vposter.style.display = 'flex';
-        vloading.classList.remove('on');
-        vthumb.src = '';
-      }, 380);
+      setTimeout(() => vmod.classList.remove('active'), 380);
     }
+
     vclose.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key==='Escape' && vmod.classList.contains('active')) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && vmod.classList.contains('active')) closeModal();
+    });
 
     /* ── PARTICELLE ── */
     (function () {
