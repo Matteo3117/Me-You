@@ -409,11 +409,11 @@
       animation:pulse 2.6s ease-in-out infinite;}
     @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
 
-    /* ── VIDEO MODAL (link diretto YouTube) ── */
+    /* ── VIDEO MODAL (Google Drive) ── */
     .vmod{
       display:none;position:fixed;inset:0;z-index:200;
       background:rgba(0,0,0,0);transition:background .4s ease;
-      align-items:center;justify-content:center;flex-direction:column;gap:28px;
+      align-items:center;justify-content:center;flex-direction:column;
     }
     .vmod.active{display:flex;background:rgba(4,2,7,.96);}
     .vmod.vis{background:rgba(4,2,7,.99);}
@@ -430,74 +430,93 @@
     }
     .vclose:active{transform:scale(.88);}
 
-    /* Card centrale del modal */
-    .vcard{
-      width:min(340px,88vw);
-      background:linear-gradient(155deg,rgba(38,26,16,.97),rgba(18,12,7,.99));
-      border:1px solid rgba(184,115,51,.28);border-radius:22px;
-      padding:32px 24px 28px;
-      box-shadow:0 40px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(184,115,51,.12);
-      display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+    .vmod-inner{
+      position:relative;width:100%;flex:1;min-height:0;
+      display:flex;align-items:center;justify-content:center;
+      padding-bottom:72px;
+    }
+    .vmod video{
+      display:block;width:100%;height:100%;
+      max-width:100vw;max-height:calc(100dvh - 130px);
+      object-fit:contain;background:#000;
+    }
+    @media(min-width:600px){
+      .vmod-inner{padding:14px 18px 80px;max-width:880px;margin:0 auto;}
+      .vmod video{border-radius:10px;max-height:calc(100dvh - 150px);
+        border:1px solid rgba(184,115,51,.14);box-shadow:0 40px 100px rgba(0,0,0,.72);}
     }
 
-    /* Thumbnail YouTube */
-    .vcard-thumb{
-      width:100%;aspect-ratio:9/16;max-height:42dvh;
-      border-radius:12px;overflow:hidden;
-      border:1px solid rgba(184,115,51,.18);
-      background:#000;
-      position:relative;
+    .vplay-ov{
+      position:absolute;inset:0;bottom:72px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;
     }
-    .vcard-thumb img{
-      width:100%;height:100%;object-fit:cover;display:block;
-    }
-    /* overlay dorato sulla thumb */
-    .vcard-thumb::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(180deg,transparent 55%,rgba(4,2,7,.6) 100%);
-    }
-
-    .vcard-title{
-      font-family:var(--fsc);font-size:clamp(20px,5vw,26px);
-      color:var(--cream);
-      text-shadow:0 0 20px rgba(184,115,51,.2);
-    }
-    .vcard-sub{
-      font-family:var(--fsn);font-weight:200;
-      font-size:clamp(10px,2.5vw,11px);letter-spacing:.22em;text-transform:uppercase;
-      color:rgba(184,115,51,.6);margin-top:-10px;
-    }
-
-    /* Pulsante apri YouTube */
-    .vcard-btn{
-      display:flex;align-items:center;gap:12px;
-      width:100%;height:56px;border-radius:14px;
-      appearance:none;border:none;cursor:pointer;
-      background:linear-gradient(155deg,rgba(184,115,51,.28),rgba(122,69,32,.35));
-      border:1px solid rgba(184,115,51,.45);
-      color:rgba(245,232,211,.96);
-      font-family:var(--fsn);font-weight:300;
-      font-size:clamp(12px,3vw,14px);letter-spacing:.15em;text-transform:uppercase;
-      text-decoration:none;
-      box-shadow:0 8px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(212,149,106,.15);
-      transition:transform .15s,box-shadow .15s,background .15s;
+    .vplay-ov.on{opacity:1;pointer-events:auto;}
+    .play-ring{
+      width:76px;height:76px;border-radius:50%;
+      border:2px solid rgba(184,115,51,.65);background:rgba(6,4,10,.65);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      box-shadow:0 0 40px rgba(184,115,51,.2);transition:transform .14s;
       -webkit-tap-highlight-color:transparent;
-      justify-content:center;
     }
-    .vcard-btn:hover{
-      background:linear-gradient(155deg,rgba(184,115,51,.38),rgba(122,69,32,.45));
-      box-shadow:0 12px 36px rgba(0,0,0,.45);
-    }
-    .vcard-btn:active{transform:scale(.96);}
+    .play-ring:active{transform:scale(.9);}
+    .play-tri{width:0;height:0;border-left:24px solid rgba(245,232,211,.95);
+      border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:5px;}
 
-    /* Icona YouTube inline SVG */
-    .yt-icon{width:26px;height:26px;flex-shrink:0;}
+    .vload{position:absolute;inset:0;bottom:72px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;}
+    .vload.off{display:none;}
+    .spinner{width:44px;height:44px;border-radius:50%;
+      border:2px solid rgba(184,115,51,.18);border-top-color:rgba(184,115,51,.88);
+      animation:spin 1s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .vload-t{font-family:var(--fsn);font-weight:200;font-size:11px;letter-spacing:.22em;
+      text-transform:uppercase;color:rgba(184,115,51,.55);}
 
-    .vcard-note{
-      font-family:var(--fsn);font-weight:200;
-      font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-      color:rgba(184,115,51,.38);
+    .vcbar{
+      position:fixed;bottom:0;left:0;right:0;z-index:215;
+      padding:10px 14px max(12px,env(safe-area-inset-bottom,12px));
+      background:linear-gradient(0deg,rgba(4,2,7,.92) 0%,rgba(4,2,7,.55) 70%,transparent 100%);
+      display:none;flex-direction:column;gap:8px;
     }
+    .vmod.active .vcbar{display:flex;}
+
+    .vcp{position:relative;height:3px;border-radius:999px;
+      background:rgba(245,232,211,.12);cursor:pointer;touch-action:none;
+      -webkit-tap-highlight-color:transparent;}
+    .vcp::before{content:'';position:absolute;inset:-13px 0;border-radius:999px;}
+    .vcpf{height:100%;border-radius:999px;width:0%;
+      background:linear-gradient(90deg,var(--copper),var(--copper2));
+      box-shadow:0 0 7px rgba(184,115,51,.38);pointer-events:none;}
+    .vcpth{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;
+      background:var(--cream);border:2px solid var(--copper);
+      box-shadow:0 0 9px rgba(184,115,51,.45);
+      transform:translate(-50%,-50%) scale(0);pointer-events:none;transition:transform .14s;left:0%;}
+    .vcp:hover .vcpth,.vcp.drag .vcpth{transform:translate(-50%,-50%) scale(1);}
+
+    .vcrow{display:flex;align-items:center;gap:2px;}
+    .vctime{font-family:var(--fsn);font-weight:200;font-size:10.5px;
+      color:rgba(245,232,211,.55);letter-spacing:.05em;font-variant-numeric:tabular-nums;
+      white-space:nowrap;margin-left:5px;}
+    .vcspc{flex:1;}
+    .vcbtn{appearance:none;background:transparent;border:none;color:rgba(245,232,211,.78);
+      width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;flex-shrink:0;transition:background .14s,transform .1s;
+      -webkit-tap-highlight-color:transparent;}
+    .vcbtn:active{transform:scale(.84);background:rgba(184,115,51,.1);}
+    .vcbtn svg{pointer-events:none;}
+
+    .vcvw{display:flex;align-items:center;gap:3px;overflow:hidden;max-width:0;opacity:0;
+      transition:max-width .28s,opacity .28s;}
+    .vcvw.open{max-width:86px;opacity:1;}
+    input[type=range].vcvol{-webkit-appearance:none;appearance:none;
+      width:68px;height:3px;border-radius:999px;background:rgba(245,232,211,.16);outline:none;cursor:pointer;}
+    input[type=range].vcvol::-webkit-slider-thumb{-webkit-appearance:none;
+      width:12px;height:12px;border-radius:50%;background:var(--cream);
+      border:2px solid var(--copper);box-shadow:0 0 7px rgba(184,115,51,.38);}
+    input[type=range].vcvol::-moz-range-thumb{width:12px;height:12px;border-radius:50%;
+      background:var(--cream);border:2px solid var(--copper);}
 
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
   </style>
@@ -715,30 +734,52 @@
   <!-- VIDEO MODAL -->
   <div class="vmod" id="vmod" role="dialog" aria-modal="true" aria-label="Video">
     <button class="vclose" id="vclose" type="button" aria-label="Chiudi">✕</button>
-
-    <div class="vcard">
-      <!-- Thumbnail Short -->
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/Y9mu9-3wnPc/hqdefault.jpg" alt="Anteprima video"/>
+    <div class="vmod-inner">
+      <div style="position:relative;width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+        <video id="vid" playsinline webkit-playsinline x5-playsinline preload="metadata">
+          <source src="https://drive.google.com/uc?export=download&id=17S3xtPSgKPT5eTVXsPAwsCkDM_KexZEd" type="video/mp4"/>
+        </video>
+        <div class="vload" id="vload"><div class="spinner"></div><div class="vload-t">apertura in corso…</div></div>
+        <div class="vplay-ov" id="vpov" aria-hidden="true">
+          <div class="play-ring" id="vpbtn" role="button" tabindex="0" aria-label="Riproduci"><div class="play-tri"></div></div>
+        </div>
       </div>
-
-      <div>
-        <div class="vcard-title">Il tuo video</div>
-        <div class="vcard-sub">ti aspetta su YouTube</div>
+    </div>
+    <div class="vcbar">
+      <div class="vcp" id="vcp" role="slider" aria-label="Posizione" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+        <div class="vcpf" id="vcpf"></div><div class="vcpth" id="vcpth"></div>
       </div>
-
-      <!-- Link che apre YouTube nell'app nativa -->
-      <a class="vcard-btn" id="ytLink"
-         href="https://www.youtube.com/shorts/Y9mu9-3wnPc"
-         target="_blank" rel="noopener noreferrer">
-        <svg class="yt-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="24" rx="5" fill="#FF0000"/>
-          <polygon points="9.5,7.5 17,12 9.5,16.5" fill="white"/>
-        </svg>
-        Guarda su YouTube
-      </a>
-
-      <div class="vcard-note">si aprirà l'app YouTube</div>
+      <div class="vcrow">
+        <button class="vcbtn" id="vskb" type="button" aria-label="Indietro 10s">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+            <text x="8" y="15" font-size="5.5" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="700">10</text>
+          </svg>
+        </button>
+        <button class="vcbtn" id="vpp" type="button" aria-label="Pausa">
+          <svg id="ipause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          <svg id="iplay"  width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <button class="vcbtn" id="vskf" type="button" aria-label="Avanti 10s">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.5"/>
+            <text x="8" y="15" font-size="5.5" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="700">10</text>
+          </svg>
+        </button>
+        <span class="vctime" id="vctime">0:00 / 0:00</span>
+        <div class="vcspc"></div>
+        <div class="vcvw" id="vcvw"><input type="range" class="vcvol" id="vcvol" min="0" max="1" step="0.02" value="1" aria-label="Volume"/></div>
+        <button class="vcbtn" id="vcvbtn" type="button" aria-label="Volume">
+          <svg id="ivon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+          <svg id="ivoff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -821,22 +862,118 @@
     /* ── LETTERA → MODAL ── */
     letterBtn.addEventListener('click', openModal);
 
+    const vid   = document.getElementById('vid');
+    const vload = document.getElementById('vload');
+    const vpov  = document.getElementById('vpov');
+    const vpbtn = document.getElementById('vpbtn');
+
     function openModal() {
       vmod.classList.add('active');
       requestAnimationFrame(() => requestAnimationFrame(() => vmod.classList.add('vis')));
       document.body.style.overflow = 'hidden';
       vclose.focus({ preventScroll: true });
+      attemptPlay();
     }
 
     function closeModal() {
+      vid.pause(); vid.currentTime = 0;
       vmod.classList.remove('vis');
       document.body.style.overflow = '';
-      setTimeout(() => vmod.classList.remove('active'), 380);
+      try { if (document.fullscreenElement) document.exitFullscreen().catch(()=>{}); } catch(_){}
+      setTimeout(() => {
+        vmod.classList.remove('active');
+        vload.classList.remove('off');
+        vpov.classList.remove('on');
+        vpov.setAttribute('aria-hidden','true');
+      }, 380);
     }
+
+    async function attemptPlay() {
+      vload.classList.remove('off');
+      vpov.classList.remove('on'); vpov.setAttribute('aria-hidden','true');
+      try { vid.muted = false; await vid.play(); }
+      catch(_) {
+        try { vid.muted = true; await vid.play(); }
+        catch(__) { showPBtn(); }
+      }
+    }
+
+    function showPBtn() {
+      vload.classList.add('off');
+      vpov.classList.add('on'); vpov.setAttribute('aria-hidden','false');
+      vid.controls = true;
+    }
+
+    vid.addEventListener('loadeddata', () => vload.classList.add('off'));
+    vid.addEventListener('canplay',    () => vload.classList.add('off'));
+    vid.addEventListener('playing',    () => { vload.classList.add('off'); vpov.classList.remove('on'); vpov.setAttribute('aria-hidden','true'); vid.controls = false; });
+    vid.addEventListener('error',      () => showPBtn());
+    vid.addEventListener('waiting',    () => vload.classList.remove('off'));
+
+    vpbtn.addEventListener('click', () => {
+      vpov.classList.remove('on'); vpov.setAttribute('aria-hidden','true');
+      vid.controls = false; vid.muted = false;
+      vid.play().catch(() => { vid.controls = true; vpov.classList.add('on'); vpov.setAttribute('aria-hidden','false'); });
+    });
+    vpbtn.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); vpbtn.click(); } });
 
     vclose.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && vmod.classList.contains('active')) closeModal();
+    });
+
+    /* ── CONTROLLI VIDEO ── */
+    const vcp    = document.getElementById('vcp');
+    const vcpf   = document.getElementById('vcpf');
+    const vcpth  = document.getElementById('vcpth');
+    const vpp    = document.getElementById('vpp');
+    const vskb   = document.getElementById('vskb');
+    const vskf   = document.getElementById('vskf');
+    const vctime = document.getElementById('vctime');
+    const vcvbtn = document.getElementById('vcvbtn');
+    const vcvw   = document.getElementById('vcvw');
+    const vcvol  = document.getElementById('vcvol');
+    const ipause = document.getElementById('ipause');
+    const iplay  = document.getElementById('iplay');
+    const ivon   = document.getElementById('ivon');
+    const ivoff  = document.getElementById('ivoff');
+
+    function ft(s) { if (!isFinite(s)) return '0:00'; return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'); }
+    function updP() { const d=vid.duration||0,c=vid.currentTime||0,p=d>0?(c/d)*100:0; vcpf.style.width=p+'%'; vcpth.style.left=p+'%'; vcp.setAttribute('aria-valuenow',Math.round(p)); vctime.textContent=ft(c)+' / '+ft(d); }
+    function updI() { const p=vid.paused||vid.ended; ipause.style.display=p?'none':''; iplay.style.display=p?'':'none'; vpp.setAttribute('aria-label',p?'Riproduci':'Pausa'); }
+    function updV() { const m=vid.muted||vid.volume===0; ivon.style.display=m?'none':''; ivoff.style.display=m?'':'none'; vcvol.value=m?0:vid.volume; }
+
+    vid.addEventListener('timeupdate',    updP);
+    vid.addEventListener('durationchange',updP);
+    vid.addEventListener('play',  updI);
+    vid.addEventListener('pause', updI);
+    vid.addEventListener('ended', updI);
+
+    vpp.addEventListener('click',  () => { vid.paused||vid.ended ? vid.play().catch(()=>{}) : vid.pause(); });
+    vskb.addEventListener('click', () => { vid.currentTime = Math.max(0, vid.currentTime-10); });
+    vskf.addEventListener('click', () => { vid.currentTime = Math.min(vid.duration||0, vid.currentTime+10); });
+
+    let seek = false;
+    function skTo(cx) { const r=vcp.getBoundingClientRect(),p=Math.max(0,Math.min(1,(cx-r.left)/r.width)),d=vid.duration; if(d&&isFinite(d)){vid.currentTime=p*d;updP();} }
+    vcp.addEventListener('mousedown', e => { seek=true; vcp.classList.add('drag'); skTo(e.clientX); });
+    window.addEventListener('mousemove', e => { if(seek) skTo(e.clientX); });
+    window.addEventListener('mouseup',   () => { if(seek){seek=false;vcp.classList.remove('drag');} });
+    vcp.addEventListener('touchstart', e => { seek=true; vcp.classList.add('drag'); skTo(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('touchmove', e => { if(seek) skTo(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('touchend',  () => { if(seek){seek=false;vcp.classList.remove('drag');} });
+    vcp.addEventListener('keydown', e => { if(e.key==='ArrowRight') vid.currentTime=Math.min(vid.duration||0,vid.currentTime+5); if(e.key==='ArrowLeft') vid.currentTime=Math.max(0,vid.currentTime-5); });
+
+    const isT = window.matchMedia('(pointer:coarse)').matches;
+    if (!isT) { let vo=false; vcvbtn.addEventListener('click', () => { vo=!vo; vcvw.classList.toggle('open',vo); }); }
+    else { vcvbtn.addEventListener('click', () => { vid.muted=!vid.muted; updV(); }); }
+    vcvol.addEventListener('input', () => { vid.volume=parseFloat(vcvol.value); vid.muted=vid.volume===0; updV(); });
+
+    document.addEventListener('keydown', e => {
+      if (!vmod.classList.contains('active')) return; if (e.target===vcp) return;
+      if (e.key===' '||e.key==='k') { e.preventDefault(); vpp.click(); }
+      if (e.key==='ArrowRight') { e.preventDefault(); vskf.click(); }
+      if (e.key==='ArrowLeft')  { e.preventDefault(); vskb.click(); }
+      if (e.key==='m') { vid.muted=!vid.muted; updV(); }
     });
 
     /* ── PARTICELLE ── */
