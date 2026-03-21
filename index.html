@@ -61,7 +61,6 @@
     .safe3d:hover{transform:scale(1.03) rotateY(-4deg) rotateX(2deg);}
     .safe3d:active{transform:scale(.96);}
 
-    /* Corpo esterno — metallo spesso con bordo rinforzato */
     .s-body{
       position:absolute;inset:0;border-radius:16px;
       background:
@@ -78,7 +77,6 @@
         inset 0 0 0 1px rgba(255,255,255,.04);
       overflow:hidden;
     }
-    /* Texture metallo spazzolato */
     .s-body::before{
       content:'';position:absolute;inset:0;
       background:
@@ -86,14 +84,12 @@
         repeating-linear-gradient(180deg,rgba(255,255,255,.009) 0,rgba(255,255,255,.009) 1px,transparent 1px,transparent 6px);
       border-radius:14px;
     }
-    /* Ombra interna bordo */
     .s-body::after{
       content:'';position:absolute;inset:0;border-radius:14px;
       box-shadow:inset 3px 3px 10px rgba(0,0,0,.55),inset -2px -2px 8px rgba(0,0,0,.45);
       pointer-events:none;
     }
 
-    /* Cornice interna rinforzata */
     .s-rim{
       position:absolute;inset:10px;border-radius:10px;
       border:2px solid rgba(184,115,51,.32);
@@ -105,7 +101,6 @@
       border:1px solid rgba(184,115,51,.14);
     }
 
-    /* Sportello — pannello incassato con effetto profondità */
     .s-door-panel{
       position:absolute;
       left:18%;right:8%;top:12%;bottom:12%;
@@ -124,7 +119,6 @@
       background:repeating-linear-gradient(92deg,rgba(255,255,255,.016) 0,rgba(255,255,255,.016) 1px,transparent 1px,transparent 4px);
     }
 
-    /* Cerniere — 3 cerniere sul lato sinistro */
     .s-hinges{
       position:absolute;left:14%;top:0;bottom:0;
       display:flex;flex-direction:column;justify-content:space-around;
@@ -143,7 +137,6 @@
       background:linear-gradient(90deg,rgba(0,0,0,.3),rgba(255,255,255,.08),rgba(0,0,0,.3));
     }
 
-    /* Targa incisa sul pannello */
     .s-plaque{
       position:absolute;left:50%;top:32%;transform:translate(-30%,-50%);text-align:center;
     }
@@ -152,12 +145,10 @@
     .s-sub{font-family:var(--fsn);font-weight:200;font-size:clamp(6px,1.5vw,8px);
       letter-spacing:.35em;text-transform:uppercase;color:rgba(184,115,51,.45);margin-top:4px;}
 
-    /* Manopola a ruota a raggi — stile cassaforte bancaria */
     .s-dial-wrap{
       position:absolute;right:8%;top:50%;transform:translateY(-50%);
       width:clamp(72px,18vw,92px);height:clamp(72px,18vw,92px);
     }
-    /* SVG ruota — nessun CSS fallback, usiamo SVG inline nell'HTML */
     .s-dial-svg{
       width:100%;height:100%;
       filter:drop-shadow(0 6px 18px rgba(0,0,0,.75)) drop-shadow(0 0 12px rgba(184,115,51,.22));
@@ -165,7 +156,6 @@
     }
     @keyframes dialTick{0%,100%{transform:rotate(0)}25%{transform:rotate(-22deg)}50%{transform:rotate(12deg)}75%{transform:rotate(-8deg)}}
 
-    /* Leva/maniglia più realistica */
     .s-handle{
       position:absolute;left:12%;top:50%;transform:translateY(-50%);
       display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -182,7 +172,6 @@
       width:40%;height:calc(100% - 12px);border-radius:4px;
       background:linear-gradient(90deg,rgba(0,0,0,.25),rgba(255,255,255,.07),rgba(0,0,0,.25));
     }
-    /* Bulloni maniglia */
     .s-handle-bolt{
       width:clamp(10px,2.5vw,13px);height:clamp(10px,2.5vw,13px);border-radius:50%;
       background:radial-gradient(circle at 35% 30%,rgba(160,110,45,.9),rgba(60,38,14,.95));
@@ -199,7 +188,6 @@
     }
     .s-screw::after{
       content:'';position:absolute;inset:0;border-radius:50%;
-      /* tacca a croce incisa */
       background:
         linear-gradient(0deg, transparent 42%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.6) 58%, transparent 58%),
         linear-gradient(90deg, transparent 42%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.6) 58%, transparent 58%);
@@ -352,7 +340,6 @@
       display:flex;align-items:center;justify-content:center;
     }
 
-    /* Lettera/busta */
     .letter-btn{
       appearance:none;border:none;background:transparent;padding:0;
       cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -422,7 +409,7 @@
       animation:pulse 2.6s ease-in-out infinite;}
     @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
 
-    /* ── VIDEO MODAL (iframe YouTube) ── */
+    /* ── VIDEO MODAL (YouTube iframe + poster) ── */
     .vmod{
       display:none;position:fixed;inset:0;z-index:200;
       background:rgba(0,0,0,0);transition:background .4s ease;
@@ -431,6 +418,7 @@
     .vmod.active{display:flex;background:rgba(4,2,7,.96);}
     .vmod.vis{background:rgba(4,2,7,.99);}
 
+    /* Bottone chiudi */
     .vclose{
       position:fixed;top:max(12px,env(safe-area-inset-top,12px));right:max(12px,env(safe-area-inset-right,12px));
       z-index:210;appearance:none;width:44px;height:44px;border-radius:50%;
@@ -443,98 +431,79 @@
     }
     .vclose:active{transform:scale(.88);background:rgba(30,18,8,.9);}
 
-    /* Contenitore iframe — formato Short 9:16, centrato, max altezza schermo */
+    /* Contenitore formato Short 9:16 */
     .vframe-wrap{
       position:relative;
-      /* altezza = 90dvh, larghezza proporzionale 9:16 */
-      height:min(90dvh, calc(100vw * 16/9));
-      width:min(calc(90dvh * 9/16), 100vw);
-      max-width:420px;
+      height:min(88dvh, calc(100vw * 16/9));
+      width:min(calc(88dvh * 9/16), 96vw);
+      max-width:400px;
       border-radius:14px;
       overflow:hidden;
-      box-shadow:
-        0 0 0 1px rgba(184,115,51,.2),
-        0 40px 100px rgba(0,0,0,.8);
+      box-shadow:0 0 0 1px rgba(184,115,51,.2), 0 40px 100px rgba(0,0,0,.8);
       background:#000;
     }
     .vframe-wrap iframe{
-      position:absolute;inset:0;
-      width:100%;height:100%;
-      border:none;display:block;
+      position:absolute;inset:0;width:100%;height:100%;border:none;z-index:3;
     }
 
-    /* Poster con thumbnail YouTube + pulsante play */
+    /* Poster thumbnail + pulsante play */
     .vframe-poster{
-      position:absolute;inset:0;
-      display:flex;align-items:center;justify-content:center;
-      cursor:pointer;
-      background:#000;
+      position:absolute;inset:0;z-index:2;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      cursor:pointer;background:#000;
       -webkit-tap-highlight-color:transparent;
     }
     .vframe-poster img{
-      position:absolute;inset:0;
-      width:100%;height:100%;
+      position:absolute;inset:0;width:100%;height:100%;
       object-fit:cover;
-      transition:transform .3s ease, filter .3s ease;
+      transition:transform .3s ease,filter .3s ease;
     }
-    .vframe-poster:hover img{ transform:scale(1.03); filter:brightness(.85); }
-    .vframe-poster:active img{ transform:scale(.98); }
-
-    /* Overlay scuro sul poster */
     .vframe-poster::before{
       content:'';position:absolute;inset:0;
-      background:rgba(4,2,7,.35);
+      background:rgba(4,2,7,.4);z-index:1;
       transition:background .25s;
-      z-index:1;
     }
-    .vframe-poster:hover::before{ background:rgba(4,2,7,.5); }
+    .vframe-poster:hover::before{background:rgba(4,2,7,.55);}
+    .vframe-poster:hover img{transform:scale(1.03);}
 
-    /* Pulsante play sul poster */
     .vframe-play{
       position:relative;z-index:2;
-      width:78px;height:78px;border-radius:50%;
-      background:rgba(6,4,10,.72);
+      width:80px;height:80px;border-radius:50%;
+      background:rgba(6,4,10,.7);
       border:2px solid rgba(184,115,51,.65);
       display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 0 8px rgba(184,115,51,.12), 0 12px 40px rgba(0,0,0,.6);
-      transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow:0 0 0 10px rgba(184,115,51,.1),0 12px 40px rgba(0,0,0,.6);
+      transition:transform .2s,box-shadow .2s,background .2s;
     }
-    .vframe-poster:hover .vframe-play{
-      transform:scale(1.08);
-      background:rgba(184,115,51,.18);
-      box-shadow:0 0 0 12px rgba(184,115,51,.15), 0 16px 50px rgba(0,0,0,.7);
+    .vframe-poster:hover .vframe-play,
+    .vframe-poster:active .vframe-play{
+      transform:scale(1.1);background:rgba(184,115,51,.2);
+      box-shadow:0 0 0 14px rgba(184,115,51,.14),0 16px 50px rgba(0,0,0,.7);
     }
-    .vframe-poster:active .vframe-play{ transform:scale(.94); }
     .vframe-play-tri{
       width:0;height:0;
-      border-left:26px solid rgba(245,232,211,.96);
-      border-top:15px solid transparent;
-      border-bottom:15px solid transparent;
-      margin-left:5px;
+      border-left:28px solid rgba(245,232,211,.96);
+      border-top:16px solid transparent;border-bottom:16px solid transparent;
+      margin-left:6px;
       filter:drop-shadow(0 0 10px rgba(184,115,51,.4));
     }
-
-    /* Etichetta sotto il play */
     .vframe-label{
-      position:relative;z-index:2;
-      margin-top:18px;
+      position:relative;z-index:2;margin-top:16px;
       font-family:var(--fsn);font-weight:200;
-      font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+      font-size:11px;letter-spacing:.3em;text-transform:uppercase;
       color:rgba(245,232,211,.7);
-      text-shadow:0 1px 6px rgba(0,0,0,.8);
+      text-shadow:0 1px 6px rgba(0,0,0,.9);
     }
 
-    /* Spinner piccolo mentre l'iframe carica DOPO il tap */
+    /* Spinner post-tap */
     .vframe-loading{
-      position:absolute;inset:0;z-index:3;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
-      background:#000;
-      opacity:0;pointer-events:none;
-      transition:opacity .3s ease;
+      position:absolute;inset:0;z-index:4;
+      display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+      background:rgba(4,2,7,.92);
     }
-    .vframe-loading.on{ opacity:1; }
+    .vframe-loading.on{display:flex;}
     .spinner{width:42px;height:42px;border-radius:50%;
-      border:2px solid rgba(184,115,51,.18);border-top-color:rgba(184,115,51,.85);
+      border:2px solid rgba(184,115,51,.18);border-top-color:rgba(184,115,51,.88);
       animation:spin 1s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg)}}
     .vload-t{font-family:var(--fsn);font-weight:200;font-size:11px;letter-spacing:.22em;
@@ -555,30 +524,24 @@
       <div class="safe3d" id="safeTrigger" role="button" tabindex="0" aria-label="Apri la cassaforte">
         <div class="s-body">
           <div class="s-rim"></div>
-          <!-- Pannello sportello incassato -->
           <div class="s-door-panel"></div>
-          <!-- Cerniere lato sinistro -->
           <div class="s-hinges">
             <div class="s-hinge"></div>
             <div class="s-hinge"></div>
             <div class="s-hinge"></div>
           </div>
-          <!-- Targa -->
           <div class="s-plaque">
             <div class="s-title">Per Te</div>
             <div class="s-sub">un segreto</div>
           </div>
-          <!-- Manopola ruota a raggi -->
           <div class="s-dial-wrap">
             <svg class="s-dial-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <!-- Gradiente radiale corpo ruota -->
                 <radialGradient id="hubGrad" cx="40%" cy="35%" r="65%">
                   <stop offset="0%" stop-color="#c8904a"/>
                   <stop offset="40%" stop-color="#7a4a1a"/>
                   <stop offset="100%" stop-color="#2a1508"/>
                 </radialGradient>
-                <!-- Gradiente raggi -->
                 <linearGradient id="spokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stop-color="#3a2008"/>
                   <stop offset="30%" stop-color="#c8904a"/>
@@ -586,13 +549,11 @@
                   <stop offset="70%" stop-color="#c8904a"/>
                   <stop offset="100%" stop-color="#3a2008"/>
                 </linearGradient>
-                <!-- Gradiente anello esterno -->
                 <radialGradient id="rimGrad" cx="50%" cy="30%" r="60%">
                   <stop offset="0%" stop-color="#d4a050"/>
                   <stop offset="50%" stop-color="#8a5520"/>
                   <stop offset="100%" stop-color="#1e1006"/>
                 </radialGradient>
-                <!-- Gradiente pomello raggio -->
                 <radialGradient id="knobGrad" cx="35%" cy="30%" r="65%">
                   <stop offset="0%" stop-color="#e8c080"/>
                   <stop offset="60%" stop-color="#a06828"/>
@@ -604,47 +565,37 @@
                   <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
                 </filter>
               </defs>
-
-              <!-- Ombra esterna ruota -->
               <circle cx="52" cy="54" r="44" fill="rgba(0,0,0,.45)" filter="url(#innerShadow)"/>
-
-              <!-- Anello esterno (ghiera) -->
               <circle cx="50" cy="50" r="44" fill="url(#rimGrad)" stroke="#b87333" stroke-width=".8" opacity=".95"/>
-              <!-- Highlight anello -->
               <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(232,184,112,.35)" stroke-width="1.2"/>
-              <!-- Tacche ghiera: 24 tacche -->
               <g stroke="rgba(212,149,106,.55)" stroke-width=".9">
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(0   50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(15  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(30  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(45  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(60  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(75  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(90  50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(105 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(120 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(135 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(150 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(165 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(180 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(195 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(210 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(225 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(240 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(255 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(270 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(285 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(300 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(315 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="11"  transform="rotate(330 50 50)"/>
-                <line x1="50" y1="7.5"  x2="50" y2="10"  transform="rotate(345 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(0   50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(15  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(30  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(45  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(60  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(75  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(90  50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(105 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(120 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(135 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(150 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(165 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(180 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(195 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(210 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(225 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(240 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(255 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(270 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(285 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(300 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(315 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="11" transform="rotate(330 50 50)"/>
+                <line x1="50" y1="7.5" x2="50" y2="10" transform="rotate(345 50 50)"/>
               </g>
-              <!-- Bordo interno anello -->
               <circle cx="50" cy="50" r="37" fill="rgba(0,0,0,.55)" stroke="rgba(100,60,20,.6)" stroke-width=".6"/>
-
-              <!-- 8 RAGGI — ruotati a 45° ciascuno, con sezione rettangolare arrotondata -->
               <g fill="url(#spokeGrad)" stroke="rgba(60,35,10,.7)" stroke-width=".3">
-                <!-- Ogni raggio: rettangolo dal centro (r~5) al bordo interno (r~36) -->
                 <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(0   50 50)"/>
                 <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(45  50 50)"/>
                 <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(90  50 50)"/>
@@ -654,7 +605,6 @@
                 <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(270 50 50)"/>
                 <rect x="47.5" y="14" width="5" height="23" rx="2.5" transform="rotate(315 50 50)"/>
               </g>
-              <!-- Highlight raggi -->
               <g fill="none" stroke="rgba(232,184,112,.3)" stroke-width=".6">
                 <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(0   50 50)"/>
                 <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(45  50 50)"/>
@@ -665,8 +615,6 @@
                 <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(270 50 50)"/>
                 <rect x="48.5" y="14" width="2" height="23" rx="1" transform="rotate(315 50 50)"/>
               </g>
-
-              <!-- Pomelli alle estremità dei raggi (8 sfere) -->
               <g>
                 <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(0   50 50)"/>
                 <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(45  50 50)"/>
@@ -676,7 +624,6 @@
                 <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(225 50 50)"/>
                 <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(270 50 50)"/>
                 <circle cx="50" cy="16.5" r="4.2" fill="url(#knobGrad)" stroke="rgba(184,115,51,.5)" stroke-width=".6" transform="rotate(315 50 50)"/>
-                <!-- Highlight pomelli -->
                 <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(0   50 50)"/>
                 <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(45  50 50)"/>
                 <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(90  50 50)"/>
@@ -686,29 +633,21 @@
                 <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(270 50 50)"/>
                 <circle cx="49.2" cy="15.5" r="1.4" fill="rgba(255,240,200,.45)" transform="rotate(315 50 50)"/>
               </g>
-
-              <!-- Mozzo centrale -->
               <circle cx="50" cy="50" r="9" fill="url(#hubGrad)" stroke="rgba(184,115,51,.55)" stroke-width="1.2"/>
               <circle cx="50" cy="50" r="9" fill="none" stroke="rgba(232,184,112,.25)" stroke-width=".7"/>
-              <!-- Bullone centrale -->
               <circle cx="50" cy="50" r="4.5" fill="url(#hubGrad)" stroke="rgba(184,115,51,.7)" stroke-width="1"/>
-              <!-- Tacca bullone -->
               <line x1="50" y1="46.5" x2="50" y2="53.5" stroke="rgba(0,0,0,.5)" stroke-width=".9" stroke-linecap="round"/>
               <line x1="46.5" y1="50" x2="53.5" y2="50" stroke="rgba(0,0,0,.5)" stroke-width=".9" stroke-linecap="round"/>
-              <!-- Highlight mozzo -->
               <circle cx="48" cy="47.5" r="2.2" fill="rgba(232,190,120,.18)"/>
             </svg>
           </div>
-          <!-- Maniglia con bulloni -->
           <div class="s-handle">
             <div class="s-handle-bolt"></div>
             <div class="s-handle-bar"></div>
             <div class="s-handle-bolt"></div>
           </div>
-          <!-- Viti angolari -->
           <div class="s-screw tl"></div><div class="s-screw tr"></div>
           <div class="s-screw bl"></div><div class="s-screw br"></div>
-          <!-- LED status -->
           <div class="s-led">
             <div class="s-led-dot"></div>
             <span class="s-led-label">armed</span>
@@ -783,177 +722,193 @@
 
   </div>
 
-  <!-- VIDEO MODAL (YouTube iframe con poster) -->
+  <!-- VIDEO MODAL -->
   <div class="vmod" id="vmod" role="dialog" aria-modal="true" aria-label="Video">
     <button class="vclose" id="vclose" type="button" aria-label="Chiudi">✕</button>
-
     <div class="vframe-wrap">
-      <!-- Spinner post-tap mentre l'iframe carica -->
+      <!-- Spinner visibile dopo il tap, mentre l'iframe carica -->
       <div class="vframe-loading" id="vloading">
-        <div class="spinner" aria-hidden="true"></div>
+        <div class="spinner"></div>
         <div class="vload-t">caricamento…</div>
       </div>
-
-      <!-- Poster con thumbnail + pulsante play -->
+      <!-- Poster con thumbnail YouTube + pulsante play -->
       <div class="vframe-poster" id="vposter" role="button" tabindex="0" aria-label="Riproduci il video">
-        <img id="vthumb" src="" alt="Anteprima video"/>
+        <img id="vthumb" src="" alt=""/>
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="vframe-play">
-            <div class="vframe-play-tri"></div>
-          </div>
+          <div class="vframe-play"><div class="vframe-play-tri"></div></div>
           <div class="vframe-label">Tocca per riprodurre</div>
         </div>
       </div>
-
-      <!-- Iframe inserito da JS solo dopo il tap -->
+      <!-- Iframe inserito solo dopo il tap (gesto utente → autoplay permesso) -->
       <div id="vframe-slot"></div>
     </div>
   </div>
 
   <script>
-    /* CONFIG */
-    const PASSWORD   = "010226";
-    const YT_ID      = "Y9mu9-3wnPc"; // ID dello Short YouTube
-    const PLEN = PASSWORD.length;
+    /* ── CONFIG ── */
+    const PASSWORD = "010226";
+    const YT_ID    = "Y9mu9-3wnPc"; // ID dello Short YouTube
+    const PLEN     = PASSWORD.length;
 
-    /* STATO */
-    let cur='safe', pv='';
+    /* ── STATO ── */
+    let cur = 'safe', pv = '';
 
-    /* ELEMENTI */
-    const sSafe=document.getElementById('sc-safe'),sPwd=document.getElementById('sc-pwd'),sOpen=document.getElementById('sc-open');
-    const safeTrig=document.getElementById('safeTrigger');
-    const pwdCard=document.getElementById('pwdCard'),pwdDots=document.getElementById('pwdDots');
-    const pwdErr=document.getElementById('pwdErr'),pwdOk=document.getElementById('pwdOk');
-    const pwdBk=document.getElementById('pwdBk'),pwdDel=document.getElementById('pwdDel');
-    const letterBtn=document.getElementById('letterBtn');
-    const vmod=document.getElementById('vmod');
-    const vclose=document.getElementById('vclose');
-    const vspinner=document.getElementById('vspinner');
-    const vframeSlot=document.getElementById('vframe-slot');
-
-    /* NAVIGAZIONE */
-    function goTo(id){
-      [sSafe,sPwd,sOpen].forEach(s=>{s.classList.remove('active','exit');s.classList.add('exit');});
-      const nx=document.getElementById('sc-'+id);
-      setTimeout(()=>{[sSafe,sPwd,sOpen].forEach(s=>s.classList.remove('exit'));nx.classList.add('active');cur=id;},340);
-    }
-
-    /* S1 → S2 */
-    safeTrig.addEventListener('click',()=>{buildDots();goTo('pwd');});
-    safeTrig.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();safeTrig.click();}});
-
-    /* TASTIERINO */
-    function buildDots(){
-      pwdDots.innerHTML='';
-      for(let i=0;i<PLEN;i++){const d=document.createElement('div');d.className='pwd-dot';d.id='d'+i;pwdDots.appendChild(d);}
-    }
-    function syncDots(){
-      for(let i=0;i<PLEN;i++){const d=document.getElementById('d'+i);if(d)d.classList.toggle('on',i<pv.length);}
-      pwdOk.disabled=pv.length<PLEN;
-    }
-    document.getElementById('pwdKeys').addEventListener('click',e=>{
-      const k=e.target.closest('.key');if(!k||pv.length>=PLEN)return;
-      pv+=k.dataset.d;pwdErr.classList.remove('on');syncDots();
-      if(pv.length===PLEN)setTimeout(()=>pwdOk.click(),100);
-    });
-    pwdDel.addEventListener('click',()=>{pv=pv.slice(0,-1);pwdErr.classList.remove('on');syncDots();});
-    pwdBk.addEventListener('click',()=>{pv='';syncDots();pwdErr.classList.remove('on');goTo('safe');});
-    pwdOk.addEventListener('click',()=>{
-      if(pv===PASSWORD){
-        document.body.setAttribute('data-state','open');goTo('open');pv='';
-      } else {
-        pwdErr.classList.add('on');pwdCard.classList.remove('shake');void pwdCard.offsetWidth;
-        pwdCard.classList.add('shake');pv='';syncDots();
-        setTimeout(()=>pwdCard.classList.remove('shake'),400);
-      }
-    });
-    document.addEventListener('keydown',e=>{
-      if(cur!=='pwd')return;
-      if(e.key>='0'&&e.key<='9'&&pv.length<PLEN){pv+=e.key;syncDots();pwdErr.classList.remove('on');if(pv.length===PLEN)setTimeout(()=>pwdOk.click(),100);}
-      if(e.key==='Backspace'){pv=pv.slice(0,-1);syncDots();}
-      if(e.key==='Enter'&&!pwdOk.disabled)pwdOk.click();
-      if(e.key==='Escape')pwdBk.click();
-    });
-
-    /* LETTERA → VIDEO MODAL */
-    letterBtn.addEventListener('click', openModal);
-
-    const vloading  = document.getElementById('vloading');
+    /* ── ELEMENTI ── */
+    const sSafe  = document.getElementById('sc-safe');
+    const sPwd   = document.getElementById('sc-pwd');
+    const sOpen  = document.getElementById('sc-open');
+    const safeTrig  = document.getElementById('safeTrigger');
+    const pwdCard   = document.getElementById('pwdCard');
+    const pwdDots   = document.getElementById('pwdDots');
+    const pwdErr    = document.getElementById('pwdErr');
+    const pwdOk     = document.getElementById('pwdOk');
+    const pwdBk     = document.getElementById('pwdBk');
+    const pwdDel    = document.getElementById('pwdDel');
+    const letterBtn = document.getElementById('letterBtn');
+    const vmod      = document.getElementById('vmod');
+    const vclose    = document.getElementById('vclose');
     const vposter   = document.getElementById('vposter');
     const vthumb    = document.getElementById('vthumb');
+    const vloading  = document.getElementById('vloading');
     const vframeSlot= document.getElementById('vframe-slot');
 
-    function openModal(){
-      vmod.classList.add('active');
-      requestAnimationFrame(()=>requestAnimationFrame(()=>vmod.classList.add('vis')));
-      document.body.style.overflow='hidden';
-      vclose.focus({preventScroll:true});
-
-      /* Mostra il poster con la thumbnail hq di YouTube */
-      vthumb.src = `https://img.youtube.com/vi/${YT_ID}/hqdefault.jpg`;
-      vposter.style.display='flex';
-      vloading.classList.remove('on');
-      vframeSlot.innerHTML='';
+    /* ── NAVIGAZIONE ── */
+    function goTo(id) {
+      [sSafe, sPwd, sOpen].forEach(s => { s.classList.remove('active','exit'); s.classList.add('exit'); });
+      const nx = document.getElementById('sc-' + id);
+      setTimeout(() => { [sSafe, sPwd, sOpen].forEach(s => s.classList.remove('exit')); nx.classList.add('active'); cur = id; }, 340);
     }
 
-    /* Tap sul poster → carica l'iframe con autoplay (gesto utente diretto) */
-    function startVideo(){
-      vposter.style.display='none';
-      vloading.classList.add('on');
+    /* ── CASSAFORTE → PASSWORD ── */
+    safeTrig.addEventListener('click', () => { buildDots(); goTo('pwd'); });
+    safeTrig.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); safeTrig.click(); } });
 
+    /* ── TASTIERINO ── */
+    function buildDots() {
+      pwdDots.innerHTML = '';
+      for (let i = 0; i < PLEN; i++) {
+        const d = document.createElement('div');
+        d.className = 'pwd-dot'; d.id = 'd' + i;
+        pwdDots.appendChild(d);
+      }
+    }
+    function syncDots() {
+      for (let i = 0; i < PLEN; i++) {
+        const d = document.getElementById('d' + i);
+        if (d) d.classList.toggle('on', i < pv.length);
+      }
+      pwdOk.disabled = pv.length < PLEN;
+    }
+    document.getElementById('pwdKeys').addEventListener('click', e => {
+      const k = e.target.closest('.key');
+      if (!k || pv.length >= PLEN) return;
+      pv += k.dataset.d; pwdErr.classList.remove('on'); syncDots();
+      if (pv.length === PLEN) setTimeout(() => pwdOk.click(), 100);
+    });
+    pwdDel.addEventListener('click', () => { pv = pv.slice(0,-1); pwdErr.classList.remove('on'); syncDots(); });
+    pwdBk.addEventListener('click',  () => { pv = ''; syncDots(); pwdErr.classList.remove('on'); goTo('safe'); });
+    pwdOk.addEventListener('click',  () => {
+      if (pv === PASSWORD) {
+        document.body.setAttribute('data-state','open'); goTo('open'); pv = '';
+      } else {
+        pwdErr.classList.add('on');
+        pwdCard.classList.remove('shake'); void pwdCard.offsetWidth; pwdCard.classList.add('shake');
+        pv = ''; syncDots();
+        setTimeout(() => pwdCard.classList.remove('shake'), 400);
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (cur !== 'pwd') return;
+      if (e.key >= '0' && e.key <= '9' && pv.length < PLEN) { pv += e.key; syncDots(); pwdErr.classList.remove('on'); if (pv.length===PLEN) setTimeout(()=>pwdOk.click(),100); }
+      if (e.key === 'Backspace') { pv = pv.slice(0,-1); syncDots(); }
+      if (e.key === 'Enter' && !pwdOk.disabled) pwdOk.click();
+      if (e.key === 'Escape') pwdBk.click();
+    });
+
+    /* ── LETTERA → MODAL ── */
+    letterBtn.addEventListener('click', openModal);
+
+    function openModal() {
+      vmod.classList.add('active');
+      requestAnimationFrame(() => requestAnimationFrame(() => vmod.classList.add('vis')));
+      document.body.style.overflow = 'hidden';
+      vclose.focus({ preventScroll: true });
+      /* Mostra il poster con la thumbnail di YouTube */
+      vthumb.src = `https://img.youtube.com/vi/${YT_ID}/hqdefault.jpg`;
+      vposter.style.display = 'flex';
+      vloading.classList.remove('on');
+      vframeSlot.innerHTML = '';
+    }
+
+    /* Tap sul poster → carica iframe con autoplay (gesto utente diretto) */
+    function startVideo() {
+      vposter.style.display = 'none';
+      vloading.classList.add('on');
       const iframe = document.createElement('iframe');
-      /* autoplay=1 funziona perché stiamo dentro un evento utente */
-      iframe.src = `https://www.youtube.com/embed/${YT_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=0`;
+      iframe.src = `https://www.youtube.com/embed/${YT_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
       iframe.allow = 'autoplay; fullscreen; picture-in-picture';
       iframe.allowFullscreen = true;
-      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;';
-      iframe.addEventListener('load', ()=>{
-        /* Breve ritardo per dare tempo a YouTube di iniziare */
-        setTimeout(()=>vloading.classList.remove('on'), 1200);
-      });
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:3;';
+      iframe.addEventListener('load', () => { setTimeout(() => vloading.classList.remove('on'), 1000); });
       vframeSlot.appendChild(iframe);
     }
-
     vposter.addEventListener('click', startVideo);
-    vposter.addEventListener('keydown', e=>{
-      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); startVideo(); }
-    });
+    vposter.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); startVideo(); } });
 
-    function closeModal(){
+    function closeModal() {
       vmod.classList.remove('vis');
-      document.body.style.overflow='';
-      setTimeout(()=>{
+      document.body.style.overflow = '';
+      setTimeout(() => {
         vmod.classList.remove('active');
-        /* Distruggi iframe → video si ferma */
-        vframeSlot.innerHTML='';
-        vposter.style.display='flex';
+        vframeSlot.innerHTML = '';          /* ferma il video distruggendo l'iframe */
+        vposter.style.display = 'flex';
         vloading.classList.remove('on');
-        vthumb.src='';
+        vthumb.src = '';
       }, 380);
     }
-
     vclose.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e=>{
-      if(e.key==='Escape' && vmod.classList.contains('active')) closeModal();
-    });
+    document.addEventListener('keydown', e => { if (e.key==='Escape' && vmod.classList.contains('active')) closeModal(); });
 
-    /* PARTICELLE */
-    (function(){
-      const c=document.getElementById('bgc'),ctx=c.getContext('2d',{alpha:true});
-      let w=0,h=0;const DPR=Math.min(2,devicePixelRatio||1);let pts=[];
-      function rsz(){w=innerWidth;h=innerHeight;c.width=Math.floor(w*DPR);c.height=Math.floor(h*DPR);c.style.width=w+'px';c.style.height=h+'px';ctx.setTransform(DPR,0,0,DPR,0,0);spwn();}
-      function spwn(){const n=Math.round(Math.min(65,Math.max(28,(w*h)/24000)));pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.055,vy:(Math.random()-.5)*.048,a:.05+Math.random()*.2,sz:.35+Math.random()*1.3,hue:Math.random()>.55?28+Math.random()*32:255+Math.random()*65,tw:.45+Math.random()*1.4}));}
-      let t0=performance.now();
-      function fr(now){const dt=Math.min(32,now-t0);t0=now;ctx.clearRect(0,0,w,h);
-        const g=ctx.createRadialGradient(w*.5,h*.4,18,w*.5,h*.42,Math.max(w,h)*.65);
-        g.addColorStop(0,'rgba(184,115,51,.07)');g.addColorStop(.5,'rgba(100,28,54,.04)');g.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-        for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;
-          if(p.x<-4)p.x=w+4;if(p.x>w+4)p.x=-4;if(p.y<-4)p.y=h+4;if(p.y>h+4)p.y=-4;
-          const tw=.52+.48*Math.sin((now/1000)*p.tw+p.x*.01);
-          ctx.beginPath();ctx.fillStyle=`hsla(${p.hue},68%,62%,${p.a*tw})`;ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);ctx.fill();}
-        requestAnimationFrame(fr);}
-      window.addEventListener('resize',rsz,{passive:true});rsz();requestAnimationFrame(fr);
+    /* ── PARTICELLE ── */
+    (function () {
+      const c = document.getElementById('bgc'), ctx = c.getContext('2d', { alpha: true });
+      let w = 0, h = 0; const DPR = Math.min(2, devicePixelRatio || 1); let pts = [];
+      function rsz() {
+        w = innerWidth; h = innerHeight;
+        c.width = Math.floor(w*DPR); c.height = Math.floor(h*DPR);
+        c.style.width = w+'px'; c.style.height = h+'px';
+        ctx.setTransform(DPR,0,0,DPR,0,0); spwn();
+      }
+      function spwn() {
+        const n = Math.round(Math.min(65, Math.max(28, (w*h)/24000)));
+        pts = Array.from({length:n}, () => ({
+          x:Math.random()*w, y:Math.random()*h,
+          vx:(Math.random()-.5)*.055, vy:(Math.random()-.5)*.048,
+          a:.05+Math.random()*.2, sz:.35+Math.random()*1.3,
+          hue:Math.random()>.55 ? 28+Math.random()*32 : 255+Math.random()*65,
+          tw:.45+Math.random()*1.4
+        }));
+      }
+      let t0 = performance.now();
+      function fr(now) {
+        const dt = Math.min(32, now-t0); t0 = now;
+        ctx.clearRect(0,0,w,h);
+        const g = ctx.createRadialGradient(w*.5,h*.4,18,w*.5,h*.42,Math.max(w,h)*.65);
+        g.addColorStop(0,'rgba(184,115,51,.07)'); g.addColorStop(.5,'rgba(100,28,54,.04)'); g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+        for (const p of pts) {
+          p.x += p.vx*dt; p.y += p.vy*dt;
+          if (p.x < -4) p.x = w+4; if (p.x > w+4) p.x = -4;
+          if (p.y < -4) p.y = h+4; if (p.y > h+4) p.y = -4;
+          const tw = .52 + .48*Math.sin((now/1000)*p.tw + p.x*.01);
+          ctx.beginPath();
+          ctx.fillStyle = `hsla(${p.hue},68%,62%,${p.a*tw})`;
+          ctx.arc(p.x, p.y, p.sz, 0, Math.PI*2);
+          ctx.fill();
+        }
+        requestAnimationFrame(fr);
+      }
+      window.addEventListener('resize', rsz, { passive:true }); rsz(); requestAnimationFrame(fr);
     })();
   </script>
 </body>
